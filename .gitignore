@@ -1,0 +1,18 @@
+# Props to: https://stackoverflow.com/questions/63254056/which-files-of-a-netbeans-project-should-be-committed-to-repository
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# Props to: https://github.com/github/gitignore/blob/main/Global/NetBeans.gitignore
+**/nbproject/private/
+**/nbproject/Makefile-*.mk
+**/nbproject/Package-*.bash
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
