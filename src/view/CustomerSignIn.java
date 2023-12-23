@@ -118,11 +118,12 @@ public class CustomerSignIn extends javax.swing.JFrame {
         if (email.isEmpty() || password.isEmpty()){
             JOptionPane.showMessageDialog(null, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
-            Customer cust = new Customer();
         
             try {
-                if (cust.loginCustomer(email, password)){
+                if (Customer.loginCustomer(email, password)){
                     JOptionPane.showMessageDialog(null, "Operasi berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    Dashboard dashboard = new Dashboard(null, true);
+                    dashboard.setVisible(true);
                 }else{
                     JOptionPane.showMessageDialog(null, "Cek Kembali", "Gagal", JOptionPane.INFORMATION_MESSAGE);
                 }

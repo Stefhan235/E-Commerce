@@ -123,6 +123,8 @@ public class SellerSignIn extends javax.swing.JFrame {
             try {
                 if (sell.loginSeller(email, password)){
                     JOptionPane.showMessageDialog(null, "Operasi berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    Dashboard dashboard = new Dashboard(null, false);
+                    dashboard.setVisible(true);
                 }else{
                     JOptionPane.showMessageDialog(null, "Cek Kembali", "Gagal", JOptionPane.INFORMATION_MESSAGE);
                 }
