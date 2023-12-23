@@ -74,12 +74,14 @@ public class SellerChoose extends javax.swing.JFrame {
 
     private void signinBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signinBtnActionPerformed
         // TODO add your handling code here:
+        SellerChoose.this.dispose();
         SellerSignIn sellerSignIn = new SellerSignIn();
         sellerSignIn.setVisible(true);
     }//GEN-LAST:event_signinBtnActionPerformed
 
     private void signupBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupBtnActionPerformed
         // TODO add your handling code here:
+        SellerChoose.this.dispose();
         SellerSignUp sellerSignUp = new SellerSignUp();
         sellerSignUp.setVisible(true);
     }//GEN-LAST:event_signupBtnActionPerformed

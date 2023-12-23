@@ -32,8 +32,8 @@ public class LandingPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1920, 1080));
 
+        customerBtn.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         customerBtn.setText("Customer");
         customerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -41,6 +41,7 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        sellerBtn.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         sellerBtn.setText("Seller");
         sellerBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -48,6 +49,7 @@ public class LandingPage extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         jLabel1.setText("You Are a :");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -75,7 +77,7 @@ public class LandingPage extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(customerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(sellerBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(752, Short.MAX_VALUE))
+                .addContainerGap(750, Short.MAX_VALUE))
         );
 
         pack();
@@ -83,12 +85,14 @@ public class LandingPage extends javax.swing.JFrame {
 
     private void customerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_customerBtnActionPerformed
         // TODO add your handling code here:
+        LandingPage.this.dispose();
         CustomerChoose choosePage = new CustomerChoose();
         choosePage.setVisible(true);
     }//GEN-LAST:event_customerBtnActionPerformed
 
     private void sellerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sellerBtnActionPerformed
         // TODO add your handling code here:
+        LandingPage.this.dispose();
         SellerChoose choosePage = new SellerChoose();
         choosePage.setVisible(true);
     }//GEN-LAST:event_sellerBtnActionPerformed

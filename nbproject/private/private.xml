@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/main/Main.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/model/Customer.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/CustomerSignIn.java</file>
+            <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/SellerSignUp.java</file>
+            <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/SellerChoose.java</file>
+            <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/SellerSignIn.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/model/Seller.java</file>
+            <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/CustomerChoose.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/model/Database.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/view/CustomerSignUp.java</file>
             <file>file:/C:/Users/lenov/OneDrive/Desktop/main/src/model/Produk.java</file>

@@ -72,12 +72,14 @@ public class CustomerChoose extends javax.swing.JFrame {
 
     private void signinBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signinBtnActionPerformed
         // TODO add your handling code here:
+        CustomerChoose.this.dispose();
         CustomerSignIn customerSignIn = new CustomerSignIn();
         customerSignIn.setVisible(true);
     }//GEN-LAST:event_signinBtnActionPerformed
 
     private void signupBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupBtnActionPerformed
         // TODO add your handling code here:
+        CustomerChoose.this.dispose();
         CustomerSignUp customerSignUp = new CustomerSignUp();
         customerSignUp.setVisible(true);
     }//GEN-LAST:event_signupBtnActionPerformed

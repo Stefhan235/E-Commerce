@@ -5,9 +5,17 @@
  */
 package view;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import model.Customer;
 import model.Seller;
 
 /**
@@ -19,6 +27,8 @@ public class SellerSignUp extends javax.swing.JFrame {
     /**
      * Creates new form SellerSignUp
      */
+    private String filename;
+    
     public SellerSignUp() {
         initComponents();
     }
@@ -43,6 +53,8 @@ public class SellerSignUp extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         inputNamaToko = new javax.swing.JTextField();
         signinBtn = new javax.swing.JButton();
+        inputImage = new javax.swing.JLabel();
+        uploadImgBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -93,6 +105,15 @@ public class SellerSignUp extends javax.swing.JFrame {
             }
         });
 
+        inputImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        uploadImgBtn.setText("Upload Foto");
+        uploadImgBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadImgBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,19 +124,27 @@ public class SellerSignUp extends javax.swing.JFrame {
                         .addGap(586, 586, 586)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel4)
-                            .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1)
-                            .addComponent(inputNomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(inputNamaToko, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel4)
+                                    .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1)
+                                    .addComponent(inputNomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(inputNamaToko, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(34, 34, 34)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(inputImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(62, 62, 62)
+                                        .addComponent(uploadImgBtn))))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(665, 665, 665)
                         .addComponent(signinBtn)))
-                .addContainerGap(1110, Short.MAX_VALUE))
+                .addContainerGap(876, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,23 +152,29 @@ public class SellerSignUp extends javax.swing.JFrame {
                 .addGap(99, 99, 99)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputNamaToko, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputNomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(inputNamaToko, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(inputNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(inputNomorTelepon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(inputEmail, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(inputPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(inputImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(uploadImgBtn)))
                 .addGap(32, 32, 32)
                 .addComponent(signinBtn)
                 .addContainerGap(652, Short.MAX_VALUE))
@@ -169,24 +204,59 @@ public class SellerSignUp extends javax.swing.JFrame {
     }//GEN-LAST:event_inputNamaTokoActionPerformed
 
     private void signinBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signinBtnActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here: 
         String namaToko = inputNamaToko.getText();
         String nama = inputNama.getText();
         String email = inputEmail.getText();
-        int nomorTelepon = Integer.parseInt(inputNomorTelepon.getText());
+        String nomorTelepon = inputNomorTelepon.getText();
         String password = inputPassword.getText();
         
-        Seller sell = new Seller(namaToko, nama, email, password, nomorTelepon);
-        SellerSignIn sellSignIn = new SellerSignIn();
         
-        try {
-            sell.registrasiSeller();
-            sellSignIn.setVisible(true);
-        } catch (SQLException ex) {
-            Logger.getLogger(SellerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+        if (namaToko.isEmpty() || nama.isEmpty() || email.isEmpty() || nomorTelepon.isEmpty() || password.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
+        }else if (filename == null ) {
+            JOptionPane.showMessageDialog(this, "Mohon unggah gambar.", "Error", JOptionPane.ERROR_MESSAGE);
+        }else {
+            try {
+                String newpath = "src//upload";
+                File directory = new File(newpath);
+                if (!directory.exists()){
+                    directory.mkdirs();
+                }
+                File fileawal;
+                File fileakhir;
+                String ext = this.filename.substring(filename.lastIndexOf(".")+1);
+                fileawal = new File(filename);
+                fileakhir = new File(newpath + "//" + email + "." + ext);
+                try {
+                    Files.copy(fileawal.toPath(), fileakhir.toPath());
+                } catch (IOException ex) {
+                    Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                Seller sell = new Seller(namaToko, nama, email, password, nomorTelepon, fileakhir.toString());
+                SellerSignIn sellSignIn = new SellerSignIn();
+                
+                sell.registrasiSeller();
+                sellSignIn.setVisible(true);
+            }catch (SQLException ex) {
+                Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
     }//GEN-LAST:event_signinBtnActionPerformed
+
+    private void uploadImgBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadImgBtnActionPerformed
+        // TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
+        ImageIcon icon = new ImageIcon(f.toString());
+        Image img = icon.getImage().getScaledInstance(inputImage.getWidth(), inputImage.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon ic = new ImageIcon(img);
+        inputImage.setIcon(ic);
+        this.filename = f.getAbsolutePath();
+    }//GEN-LAST:event_uploadImgBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -225,6 +295,7 @@ public class SellerSignUp extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField inputEmail;
+    private javax.swing.JLabel inputImage;
     private javax.swing.JTextField inputNama;
     private javax.swing.JTextField inputNamaToko;
     private javax.swing.JTextField inputNomorTelepon;
@@ -235,5 +306,6 @@ public class SellerSignUp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JButton signinBtn;
+    private javax.swing.JButton uploadImgBtn;
     // End of variables declaration//GEN-END:variables
 }

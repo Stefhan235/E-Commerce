@@ -8,15 +8,16 @@ public class Seller {
     private String nama;
     private String email;
     private String password;
-    private int nomorTelepon;
-    //private Produk produk;
+    private String nomorTelepon;
+    private String imgPath;
 
-    public Seller(String namaToko, String nama, String email, String password, int nomorTelepon) {
+    public Seller(String namaToko, String nama, String email, String password, String nomorTelepon, String imgPath) {
         this.namaToko = namaToko;
         this.nama = nama;
         this.email = email;
         this.password = password;
         this.nomorTelepon = nomorTelepon;
+        this.imgPath = imgPath;
     }
 
     public Seller() {
@@ -54,17 +55,25 @@ public class Seller {
         this.password = password;
     }
 
-    public int getNomorTelepon() {
+    public String getNomorTelepon() {
         return nomorTelepon;
     }
 
-    public void setNomorTelepon(int nomorTelepon) {
+    public void setNomorTelepon(String nomorTelepon) {
         this.nomorTelepon = nomorTelepon;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
     
     public void registrasiSeller() throws SQLException{
         Database db = new Database();
-        String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password) VALUES('"+this.getNamaToko()+"', '"+this.getNama()+"','"+this.getEmail()+"','"+this.getNomorTelepon()+"','"+this.getPassword()+"')";
+        String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password, image_path) VALUES('"+this.getNamaToko()+"', '"+this.getNama()+"','"+this.getEmail()+"','"+this.getNomorTelepon()+"','"+this.getPassword()+"','"+this.getImgPath()+"')";
         db.query(sql);
     }
     

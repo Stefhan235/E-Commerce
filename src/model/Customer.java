@@ -7,13 +7,15 @@ public class Customer {
     private String nama;
     private String email;
     private String password;
-    private int nomorTelepon;
+    private String nomorTelepon;
+    private String imgPath;
 
-    public Customer(String nama, String email, String password, int nomorTelepon) {
+    public Customer(String nama, String email, String password, String nomorTelepon, String imgPath) {
         this.nama = nama;
         this.email = email;
         this.password = password;
         this.nomorTelepon = nomorTelepon;
+        this.imgPath = imgPath;
     }
 
     public Customer() {
@@ -43,17 +45,25 @@ public class Customer {
         this.password = password;
     }
 
-    public int getNomorTelepon() {
+    public String getNomorTelepon() {
         return nomorTelepon;
     }
 
-    public void setNomorTelepon(int nomorTelepon) {
+    public void setNomorTelepon(String nomorTelepon) {
         this.nomorTelepon = nomorTelepon;
+    }
+
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
     
     public void registrasiCustomer() throws SQLException{
         Database db = new Database();
-        String sql = "INSERT INTO customer(nama, email, nomor_telepon, password) VALUES('"+this.getNama()+"','"+this.getEmail()+"','"+this.getNomorTelepon()+"','"+this.getPassword()+"')";
+        String sql = "INSERT INTO customer(nama, email, nomor_telepon, password, image_path) VALUES('"+this.getNama()+"','"+this.getEmail()+"','"+this.getNomorTelepon()+"','"+this.getPassword()+"','"+this.getImgPath()+"')";
         db.query(sql);
     }
     
