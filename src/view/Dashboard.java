@@ -8,18 +8,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import model.Akun;
 
 /**
  *
  * @author wwwvf
  */
 public class Dashboard extends javax.swing.JFrame {
-    static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-    static int saldoSekarang;
-    static String identity;
-    static boolean isClient = true;
-    static int paginatorIndex = 0;
-    static int maxBarang = 100;
+    private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+    private static int saldoSekarang;
+    private Akun identity;
+    private boolean isClient = true;
+    private static int paginatorIndex = 0;
+    private static int maxBarang = 100;
     
     /**
      * Creates new form Dashboard
@@ -29,7 +30,7 @@ public class Dashboard extends javax.swing.JFrame {
         
     }
     
-    public Dashboard(String identity, boolean isClient) {
+    public Dashboard(Akun user, boolean isClient) {
         initComponents();
         // GUI Settings
         this.getContentPane().setBackground(Color.WHITE);
@@ -38,7 +39,7 @@ public class Dashboard extends javax.swing.JFrame {
         
         // Property Settings
         saldoSekarang = 696969;
-        this.identity = identity;
+        this.identity = user;
         this.isClient = isClient;
         
         // Adjust GUI based on role
@@ -907,7 +908,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard("bjir@gmail.com", false).setVisible(true);
+                new Dashboard(null, false).setVisible(true);
             }
         });
     }

@@ -3,9 +3,9 @@ package model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Customer extends Akun{
-    public Customer(String nama, String email, String no_telepon, String alamat, int saldo, String imgPath) {
-        super(nama, email, no_telepon, alamat, saldo, imgPath);
+public class Customer extends Akun {
+    public Customer(String nama, String email, String no_telepon, int saldo, String imgPath) {
+        super(nama, email, no_telepon, saldo, imgPath);
     }
 
     static public void registrasiCustomer(String nama, String email, String no_telepon, String password, String imgPath) throws SQLException{
