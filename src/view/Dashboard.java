@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import model.Akun;
 import model.Customer;
+import model.Database;
+import model.Produk;
 import model.Seller;
 
 /**
@@ -25,11 +27,17 @@ public class Dashboard extends javax.swing.JFrame {
     private boolean isClient = true;
     private static int paginatorIndex = 0;
     private static int maxBarang = 100;
+    private static Produk[] listBarang = new Produk[5];
     
     private void fetchItems() {
-        if(isClient) {
+        try {
+            Database db = new Database();
+            if(isClient) {
             
-        } else {
+            } else {
+
+            }
+        } catch(SQLException e) {
             
         }
     }
@@ -41,7 +49,7 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         // GUI Settings
         this.getContentPane().setBackground(Color.WHITE);
-        this.getContentPane().setPreferredSize(new Dimension(940, 540));
+        //this.getContentPane().setPreferredSize(new Dimension(940, 540));
         dashboardAddItem.setBackground(TRANSPARENT);
         
         // Property Settings
@@ -781,11 +789,12 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardAddItemMouseExited
 
     private void productCard1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard1MouseClicked
-        System.out.println("ashlasdhaslhld");
+       
     }//GEN-LAST:event_productCard1MouseClicked
 
     private void dashboardAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardAddItemActionPerformed
-        // TODO add your handling code here:
+        produkTambah page = new produkTambah(this, true, identity.getEmail());
+        page.setVisible(true);
     }//GEN-LAST:event_dashboardAddItemActionPerformed
 
     private void dashboardSaldoActionValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionValueActionPerformed
@@ -862,6 +871,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
         // Update...
+        fetchItems();
     }//GEN-LAST:event_dashboardNextPageActionPerformed
 
     private void dashboardPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardPrevPageActionPerformed
@@ -926,7 +936,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard(null, false).setVisible(true);
+                new Dashboard(new Seller("", "", "", "", 0, ""), false).setVisible(true);
             }
         });
     }
