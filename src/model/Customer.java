@@ -8,16 +8,34 @@ public class Customer extends Akun {
         super(nama, email, no_telepon, saldo, imgPath);
     }
 
-    static public void registrasiCustomer(String nama, String email, String no_telepon, String password, String imgPath) throws SQLException{
+    static public void topUp(String email, int deltaSaldo) throws SQLException {
         Database db = new Database();
-        String sql = "INSERT INTO customer(nama, email, nomor_telepon, password, image_path) VALUES('" + nama +"','"+ email +"','"+ no_telepon +"','"+ password +"','" + imgPath +"')";
+        String sql = String.format(
+            "UPDATE seller SET saldo = saldo + %d WHERE email = '%s'",
+            deltaSaldo, email
+        );
         db.query(sql);
     }
     
-    static public boolean loginCustomer(String email, String password) throws SQLException{
+    static public void registrasiCustomer(String nama, String email, String no_telepon, String password, String imgPath) throws SQLException{
+        Database db = new Database();
+        String sql = "INSERT INTO customer(nama, email, nomor_telepon, password, image_path, saldo) VALUES('" + nama +"','"+ email +"','"+ no_telepon +"','"+ password +"','" + imgPath +"', 0)";
+        db.query(sql);
+    }
+    
+    static public Customer loginCustomer(String email, String password) throws SQLException{
         Database db = new Database();
         String sql = "SELECT * FROM customer WHERE email = '" + email + "' AND password = '" + password + "'";
         ResultSet rs = db.getData(sql);
-        return rs.next();
+        if(rs.next()) {
+            return new Customer(
+                rs.getString("nama"), 
+                rs.getString("email"),
+                rs.getString("nomor_telepon"),  
+                rs.getInt("saldo"), 
+                rs.getString("image_path")
+            );
+        }
+        return null;
     }
 }

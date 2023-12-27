@@ -6,9 +6,13 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import static java.awt.image.ImageObserver.HEIGHT;
+import java.sql.SQLException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import model.Akun;
+import model.Customer;
+import model.Seller;
 
 /**
  *
@@ -22,14 +26,17 @@ public class Dashboard extends javax.swing.JFrame {
     private static int paginatorIndex = 0;
     private static int maxBarang = 100;
     
+    private void fetchItems() {
+        if(isClient) {
+            
+        } else {
+            
+        }
+    }
+    
     /**
      * Creates new form Dashboard
      */
-    
-    private void fetchInfo() {
-        
-    }
-    
     public Dashboard(Akun user, boolean isClient) {
         initComponents();
         // GUI Settings
@@ -38,9 +45,9 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardAddItem.setBackground(TRANSPARENT);
         
         // Property Settings
-        saldoSekarang = 696969;
         this.identity = user;
         this.isClient = isClient;
+        saldoSekarang = identity.getSaldo();
         
         // Adjust GUI based on role
         if(isClient) {
@@ -59,7 +66,9 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
         // Post-property setting GUI settings
-        updateSaldo(0, '+');
+        dashboardSaldoAnda.setText(String.format(
+        "Rp. %d", saldoSekarang
+        ));
         updatePaginatorMsg();
     }
 
@@ -809,30 +818,7 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     private void dashboardSaldoActionValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dashboardSaldoActionValueFocusLost
-        String tempNominal = dashboardSaldoActionValue.getText();
-        int nominal;
-        
-        if(!tempNominal.isEmpty()){
-            try {
-                nominal = Integer.valueOf(tempNominal);
-                if(nominal < 0) {
-                    JOptionPane.showMessageDialog(null, "Nilai tak boleh negatif", "Error!", HEIGHT);
-                    return;
-                }
-                
-                // Update to Database
-                
-                // Update interface
-                if(isClient) updateSaldo(nominal, '+');
-                else updateSaldo(nominal, '-');
-            } catch(NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
-            }
-            
-
-        }
-        
-        dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
+       
     }//GEN-LAST:event_dashboardSaldoActionValueFocusLost
 
     private void productCard2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard2MouseClicked
@@ -875,7 +861,27 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardPrevPageActionPerformed
 
     private void dashboardSaldoActionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionButtonActionPerformed
-        // TODO add your handling code here:
+        String tempNominal = dashboardSaldoActionValue.getText();
+        int nominal;
+        
+        if(!tempNominal.isEmpty()) {
+            System.out.println(tempNominal);
+            try {
+                nominal = Integer.valueOf(tempNominal);
+                if(nominal < 0) {
+                    JOptionPane.showMessageDialog(null, "Nilai tak boleh negatif", "Error!", HEIGHT);
+                    return;
+                }
+                
+                // Update interface and database
+                if(isClient) updateSaldo(nominal, '+');
+                else updateSaldo(nominal, '-');
+            } catch(NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+            }
+        }
+        
+        dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
     }//GEN-LAST:event_dashboardSaldoActionButtonActionPerformed
 
     /**

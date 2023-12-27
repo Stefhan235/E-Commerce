@@ -19,7 +19,15 @@ public class Seller extends Akun {
         this.namaToko = namaToko;
     }
     
-    // TODO: Update these into static
+    static public void withdraw(String email, int deltaSaldo) throws SQLException {
+        Database db = new Database();
+        String sql = String.format(
+            "UPDATE customer SET saldo = saldo + %d WHERE email = '%s'",
+            deltaSaldo, email
+        );
+        db.query(sql);
+    }
+        
     static public void registrasiSeller(String nama_toko, String nama, String email, String nomor_telepon, String password, String imgPath) throws SQLException{
         Database db = new Database();
         String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password, image_path, saldo) VALUES('" + nama_toko + "', '" + nama + "','" + email + "','" + nomor_telepon + "','" + password + "','" + imgPath + "', 0)";

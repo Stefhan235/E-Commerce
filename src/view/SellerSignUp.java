@@ -238,6 +238,8 @@ public class SellerSignUp extends javax.swing.JFrame {
 
                 SellerSignIn sellSignIn = new SellerSignIn();
                 sellSignIn.setVisible(true);
+                this.setVisible(false);
+
             }catch (SQLException ex) {
                 Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
             }
