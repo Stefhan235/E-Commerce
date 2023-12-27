@@ -796,7 +796,18 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardSaldoActionValue.setText("");
     }//GEN-LAST:event_dashboardSaldoActionValueFocusGained
 
-    private void updateSaldo(int deltaSaldo, char operation) {
+    private void updateDBSaldo(String user, int deltaSaldo) {
+        try {
+            if(isClient) {
+                Customer.topUp(user, deltaSaldo);
+            } else {
+                Seller.withdraw(user, deltaSaldo);
+            }
+        } catch(SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+        }
+    }
+    private void updateDisplaySaldo(int deltaSaldo, char operation) {
         switch(operation) {
             case '+':
                 saldoSekarang += deltaSaldo;
@@ -865,7 +876,6 @@ public class Dashboard extends javax.swing.JFrame {
         int nominal;
         
         if(!tempNominal.isEmpty()) {
-            System.out.println(tempNominal);
             try {
                 nominal = Integer.valueOf(tempNominal);
                 if(nominal < 0) {
@@ -874,8 +884,10 @@ public class Dashboard extends javax.swing.JFrame {
                 }
                 
                 // Update interface and database
-                if(isClient) updateSaldo(nominal, '+');
-                else updateSaldo(nominal, '-');
+                if(isClient)updateDisplaySaldo(nominal, '+');
+                else updateDisplaySaldo(nominal, '-');
+                
+                updateDBSaldo(this.identity.getEmail(), nominal);
             } catch(NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
             }

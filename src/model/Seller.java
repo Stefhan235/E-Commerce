@@ -22,7 +22,7 @@ public class Seller extends Akun {
     static public void withdraw(String email, int deltaSaldo) throws SQLException {
         Database db = new Database();
         String sql = String.format(
-            "UPDATE customer SET saldo = saldo + %d WHERE email = '%s'",
+            "UPDATE seller SET saldo = saldo - %d WHERE email = '%s'",
             deltaSaldo, email
         );
         db.query(sql);

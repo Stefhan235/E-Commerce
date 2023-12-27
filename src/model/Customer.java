@@ -11,7 +11,7 @@ public class Customer extends Akun {
     static public void topUp(String email, int deltaSaldo) throws SQLException {
         Database db = new Database();
         String sql = String.format(
-            "UPDATE seller SET saldo = saldo + %d WHERE email = '%s'",
+            "UPDATE customer SET saldo = saldo + %d WHERE email = '%s'",
             deltaSaldo, email
         );
         db.query(sql);
