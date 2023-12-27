@@ -28,7 +28,7 @@ public class Seller extends Akun {
         db.query(sql);
     }
         
-    static public void registrasiSeller(String nama_toko, String nama, String email, String nomor_telepon, String password, String imgPath) throws SQLException{
+    static public void registrasiSeller(String nama_toko, String nama, String email, String password, String nomor_telepon, String imgPath) throws SQLException{
         Database db = new Database();
         String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password, image_path, saldo) VALUES('" + nama_toko + "', '" + nama + "','" + email + "','" + nomor_telepon + "','" + password + "','" + imgPath + "', 0)";
         db.query(sql);

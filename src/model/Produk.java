@@ -1,5 +1,7 @@
 package model;
 
+import java.sql.SQLException;
+
 public class Produk {
     //private int idProduk;
     private String namaProduk;
@@ -54,5 +56,17 @@ public class Produk {
 
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
+    }
+    
+    static public void fetchAllProducts() throws SQLException {
+        Database db = new Database();
+        String sql = "SELECT * FROM products";
+        db.getData(sql);
+    }
+    
+    static public void fetchSellerProduct(String seller) throws SQLException {
+        Database db = new Database();
+        String sql = "";
+        db.getData(sql);
     }
 }
