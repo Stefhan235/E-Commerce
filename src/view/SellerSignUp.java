@@ -234,11 +234,12 @@ public class SellerSignUp extends javax.swing.JFrame {
                     Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                Seller sell = new Seller(namaToko, nama, email, password, nomorTelepon, fileakhir.toString());
+                Seller.registrasiSeller(namaToko, nama, email, password, nomorTelepon, fileakhir.toString());
+
                 SellerSignIn sellSignIn = new SellerSignIn();
-                
-                sell.registrasiSeller();
                 sellSignIn.setVisible(true);
+                this.setVisible(false);
+
             }catch (SQLException ex) {
                 Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -6,40 +6,115 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import static java.awt.image.ImageObserver.HEIGHT;
+import java.sql.SQLException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import model.Akun;
+import model.Customer;
+import model.Database;
+import model.Produk;
+import model.Seller;
 
 /**
  *
  * @author wwwvf
  */
 public class Dashboard extends javax.swing.JFrame {
-    static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-    static int saldoSekarang;
-    static String identity;
-    static boolean isClient = true;
-    static int paginatorIndex = 0;
-    static int maxBarang = 100;
+    private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+    private static int saldoSekarang;
+    private Akun identity;
+    private boolean isClient = true;
+    private static int paginatorIndex = 0;
+    private static int maxBarang = 100;
+    private static Produk[] listBarang = new Produk[5];
+    
+    private void updateMaxBarang() {
+        try {
+            maxBarang = Produk.getProductCount();
+        } catch(SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+        }
+    }
+    
+    private void fetchItems() {
+        try {
+            Database db = new Database();
+            if(isClient) {
+                Produk.fetchProducts(listBarang, paginatorIndex);
+            } else {
+                Produk.fetchSellerProduct(identity.getEmail(), paginatorIndex);
+            }
+        } catch(SQLException e) {
+            
+        }
+    }
+    
+    private void updateItemDisplay() {
+        JPanel[] cards = {
+            productCard1,
+            productCard2,
+            productCard3,
+            productCard4,
+            productCard5,
+        };
+        
+        for(int i = 0; i < 5; i++) {
+            if(listBarang[i] == null) {
+                cards[i].setVisible(false);
+            } else {
+                cards[i].setVisible(true);
+                switch(i) {
+                    case 1:
+                        productName2.setText(listBarang[i].getNamaProduk());
+                        productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock2.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor2.setText(listBarang[i].getPenjualProduk());
+                        break;
+                    case 2:
+                        productName3.setText(listBarang[i].getNamaProduk());
+                        productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock3.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor3.setText(listBarang[i].getPenjualProduk());
+                        break;
+                    case 3:
+                        productName4.setText(listBarang[i].getNamaProduk());
+                        productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock4.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor4.setText(listBarang[i].getPenjualProduk());
+                        break;
+                    case 4:
+                        productName5.setText(listBarang[i].getNamaProduk());
+                        productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock5.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor5.setText(listBarang[i].getPenjualProduk());
+                        break;
+                    default:
+                        productName1.setText(listBarang[i].getNamaProduk());
+                        productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock1.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor1.setText(listBarang[i].getPenjualProduk());
+
+                }
+            }
+        }
+    }
     
     /**
      * Creates new form Dashboard
      */
-    
-    private void fetchInfo() {
-        
-    }
-    
-    public Dashboard(String identity, boolean isClient) {
+    public Dashboard(Akun user, boolean isClient) {
         initComponents();
         // GUI Settings
         this.getContentPane().setBackground(Color.WHITE);
-        this.getContentPane().setPreferredSize(new Dimension(940, 540));
+        //this.getContentPane().setPreferredSize(new Dimension(940, 540));
         dashboardAddItem.setBackground(TRANSPARENT);
         
         // Property Settings
-        saldoSekarang = 696969;
-        this.identity = identity;
+        this.identity = user;
         this.isClient = isClient;
+        saldoSekarang = identity.getSaldo();
         
         // Adjust GUI based on role
         if(isClient) {
@@ -56,9 +131,14 @@ public class Dashboard extends javax.swing.JFrame {
                 vendor.setForeground(TRANSPARENT);
             }            
         }
-        
+
         // Post-property setting GUI settings
-        updateSaldo(0, '+');
+        dashboardSaldoAnda.setText(String.format(
+        "Rp. %d", saldoSekarang
+        ));
+        fetchItems();
+        updateMaxBarang();
+        updateItemDisplay();
         updatePaginatorMsg();
     }
 
@@ -365,9 +445,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(dashboardSaldoActionText)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(dashboardSaldoActionValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dashboardSaldoActionValue, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(dashboardSaldoActionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17))))
@@ -704,7 +784,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1520, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(dashboardPrevPage, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -724,12 +804,12 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(productCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(dashboardAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(dashboardPaginatorMsg)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(dashboardPaginatorMsg))
-                .addContainerGap(260, Short.MAX_VALUE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(224, 224, 224))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -771,11 +851,12 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardAddItemMouseExited
 
     private void productCard1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard1MouseClicked
-        System.out.println("ashlasdhaslhld");
+       
     }//GEN-LAST:event_productCard1MouseClicked
 
     private void dashboardAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardAddItemActionPerformed
-        // TODO add your handling code here:
+        produkTambah page = new produkTambah(this, true, identity.getEmail());
+        page.setVisible(true);
     }//GEN-LAST:event_dashboardAddItemActionPerformed
 
     private void dashboardSaldoActionValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionValueActionPerformed
@@ -786,7 +867,18 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardSaldoActionValue.setText("");
     }//GEN-LAST:event_dashboardSaldoActionValueFocusGained
 
-    private void updateSaldo(int deltaSaldo, char operation) {
+    private void updateDBSaldo(String user, int deltaSaldo) {
+        try {
+            if(isClient) {
+                Customer.topUp(user, deltaSaldo);
+            } else {
+                Seller.withdraw(user, deltaSaldo);
+            }
+        } catch(SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+        }
+    }
+    private void updateDisplaySaldo(int deltaSaldo, char operation) {
         switch(operation) {
             case '+':
                 saldoSekarang += deltaSaldo;
@@ -808,30 +900,7 @@ public class Dashboard extends javax.swing.JFrame {
     }
     
     private void dashboardSaldoActionValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dashboardSaldoActionValueFocusLost
-        String tempNominal = dashboardSaldoActionValue.getText();
-        int nominal;
-        
-        if(!tempNominal.isEmpty()){
-            try {
-                nominal = Integer.valueOf(tempNominal);
-                if(nominal < 0) {
-                    JOptionPane.showMessageDialog(null, "Nilai tak boleh negatif", "Error!", HEIGHT);
-                    return;
-                }
-                
-                // Update to Database
-                
-                // Update interface
-                if(isClient) updateSaldo(nominal, '+');
-                else updateSaldo(nominal, '-');
-            } catch(NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
-            }
-            
-
-        }
-        
-        dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
+       
     }//GEN-LAST:event_dashboardSaldoActionValueFocusLost
 
     private void productCard2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard2MouseClicked
@@ -858,12 +927,14 @@ public class Dashboard extends javax.swing.JFrame {
         ));
     }
     private void dashboardNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardNextPageActionPerformed
-        if(paginatorIndex < (maxBarang / 5) - 1) { // floor(Banyak barang / 5) - 1
+        if(paginatorIndex < (maxBarang / 5)) {
             paginatorIndex++;
             updatePaginatorMsg();
         }
         
         // Update...
+        fetchItems();
+        updateItemDisplay();
     }//GEN-LAST:event_dashboardNextPageActionPerformed
 
     private void dashboardPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardPrevPageActionPerformed
@@ -871,10 +942,35 @@ public class Dashboard extends javax.swing.JFrame {
             paginatorIndex--;        
             updatePaginatorMsg();
         }
+        
+        // Update...
+        fetchItems();
+        updateItemDisplay();
     }//GEN-LAST:event_dashboardPrevPageActionPerformed
 
     private void dashboardSaldoActionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionButtonActionPerformed
-        // TODO add your handling code here:
+        String tempNominal = dashboardSaldoActionValue.getText();
+        int nominal;
+        
+        if(!tempNominal.isEmpty()) {
+            try {
+                nominal = Integer.valueOf(tempNominal);
+                if(nominal < 0) {
+                    JOptionPane.showMessageDialog(null, "Nilai tak boleh negatif", "Error!", HEIGHT);
+                    return;
+                }
+                
+                // Update interface and database
+                if(isClient)updateDisplaySaldo(nominal, '+');
+                else updateDisplaySaldo(nominal, '-');
+                
+                updateDBSaldo(this.identity.getEmail(), nominal);
+            } catch(NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+            }
+        }
+        
+        dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
     }//GEN-LAST:event_dashboardSaldoActionButtonActionPerformed
 
     /**
@@ -907,7 +1003,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard("bjir@gmail.com", false).setVisible(true);
+                new Dashboard(new Seller("", "", "", "", 0, ""), false).setVisible(true);
             }
         });
     }

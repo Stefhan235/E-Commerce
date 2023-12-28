@@ -1,3 +1,5 @@
+src/upload/
+
 # Props to: https://stackoverflow.com/questions/63254056/which-files-of-a-netbeans-project-should-be-committed-to-repository
 nbproject/private/
 build/

@@ -117,12 +117,14 @@ public class SellerSignIn extends javax.swing.JFrame {
         
         if (email.isEmpty() || password.isEmpty()){
             JOptionPane.showMessageDialog(null, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
-        }else {
-            Seller sell = new Seller();
-        
+        }else {     
             try {
-                if (sell.loginSeller(email, password)){
+                Seller user = Seller.loginSeller(email, password);
+                if (user != null){
                     JOptionPane.showMessageDialog(null, "Operasi berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    Dashboard dashboard = new Dashboard(user, false);
+                    dashboard.setVisible(true);
+                    this.setVisible(false);
                 }else{
                     JOptionPane.showMessageDialog(null, "Cek Kembali", "Gagal", JOptionPane.INFORMATION_MESSAGE);
                 }

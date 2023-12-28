@@ -3,24 +3,12 @@ package model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Seller {
+public class Seller extends Akun {
     private String namaToko;
-    private String nama;
-    private String email;
-    private String password;
-    private String nomorTelepon;
-    private String imgPath;
 
-    public Seller(String namaToko, String nama, String email, String password, String nomorTelepon, String imgPath) {
+    public Seller(String namaToko, String nama, String email, String no_telepon, int saldo, String imgPath) {
+        super(nama, email, no_telepon, saldo, imgPath);
         this.namaToko = namaToko;
-        this.nama = nama;
-        this.email = email;
-        this.password = password;
-        this.nomorTelepon = nomorTelepon;
-        this.imgPath = imgPath;
-    }
-
-    public Seller() {
     }
 
     public String getNamaToko() {
@@ -31,57 +19,36 @@ public class Seller {
         this.namaToko = namaToko;
     }
     
-    public String getNama() {
-        return nama;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getNomorTelepon() {
-        return nomorTelepon;
-    }
-
-    public void setNomorTelepon(String nomorTelepon) {
-        this.nomorTelepon = nomorTelepon;
-    }
-
-    public String getImgPath() {
-        return imgPath;
-    }
-
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
-    }
-    
-    public void registrasiSeller() throws SQLException{
+    static public void withdraw(String email, int deltaSaldo) throws SQLException {
         Database db = new Database();
-        String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password, image_path) VALUES('"+this.getNamaToko()+"', '"+this.getNama()+"','"+this.getEmail()+"','"+this.getNomorTelepon()+"','"+this.getPassword()+"','"+this.getImgPath()+"')";
+        String sql = String.format(
+            "UPDATE seller SET saldo = saldo - %d WHERE email = '%s'",
+            deltaSaldo, email
+        );
+        db.query(sql);
+    }
+        
+    static public void registrasiSeller(String nama_toko, String nama, String email, String password, String nomor_telepon, String imgPath) throws SQLException{
+        Database db = new Database();
+        String sql = "INSERT INTO seller(nama_toko, nama, email, nomor_telepon, password, image_path, saldo) VALUES('" + nama_toko + "', '" + nama + "','" + email + "','" + nomor_telepon + "','" + password + "','" + imgPath + "', 0)";
         db.query(sql);
     }
     
-    public boolean loginSeller(String email, String password) throws SQLException{
+    static public Seller loginSeller(String email, String password) throws SQLException{
         Database db = new Database();
         String sql = "SELECT * FROM seller WHERE email = '" + email + "' AND password = '" + password + "'";
         ResultSet rs = db.getData(sql);
-        return rs.next();
+        if(rs.next()) {
+            return new Seller(
+                rs.getString("nama_toko"),
+                rs.getString("nama"), 
+                rs.getString("email"),
+                rs.getString("nomor_telepon"),  
+                rs.getInt("saldo"), 
+                rs.getString("image_path")
+            );
+        }
+        return null;
     }
 }
 
