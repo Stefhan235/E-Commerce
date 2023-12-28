@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Produk {
@@ -58,15 +59,49 @@ public class Produk {
         this.imgPath = imgPath;
     }
     
-    static public void fetchAllProducts() throws SQLException {
+    static public int getProductCount() throws SQLException {
         Database db = new Database();
-        String sql = "SELECT * FROM products";
-        db.getData(sql);
+        String sql = "SELECT COUNT(*) AS banyak_barang FROM produk";
+        ResultSet res = db.getData(sql);
+        
+        res.next();
+        return res.getInt("banyak_barang");
     }
     
-    static public void fetchSellerProduct(String seller) throws SQLException {
+    static public void fetchProducts(Produk[] produkList, int offset) throws SQLException {
         Database db = new Database();
-        String sql = "";
-        db.getData(sql);
+        String sql = String.format(
+            "SELECT * FROM produk ORDER BY id_barang LIMIT 5 OFFSET %d;",
+            offset*5
+        );
+        
+        ResultSet res = db.getData(sql);
+        int ptr = 0;
+        while(res.next()) {
+            produkList[ptr] = new Produk(
+                res.getString("nama"),
+                res. getInt("harga"),
+                res.getString("deskripsi"),
+                res.getInt("stok"),
+                res.getString("image_path")
+            );
+            ptr++;
+        }
+
+        // Set the rest of items to null if number of products in database is insufficient
+        while(ptr < 5) {
+            produkList[ptr] = null;
+            ptr++;
+        }
+        
+    }
+    
+    static public void fetchSellerProduct(String seller, int offset) throws SQLException {
+        Database db = new Database();
+        String sql = String.format(
+            "SELECT * FROM produk WHERE penjual='%s' LIMIT 5 OFFSET %d",
+            seller, offset*5
+        );
+        ResultSet rs = db.getData(sql);
     }
 }

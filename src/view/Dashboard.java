@@ -10,6 +10,7 @@ import static java.awt.image.ImageObserver.HEIGHT;
 import java.sql.SQLException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import model.Akun;
 import model.Customer;
 import model.Database;
@@ -29,16 +30,68 @@ public class Dashboard extends javax.swing.JFrame {
     private static int maxBarang = 100;
     private static Produk[] listBarang = new Produk[5];
     
+    private void updateMaxBarang() {
+        try {
+            maxBarang = Produk.getProductCount();
+        } catch(SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
+        }
+    }
+    
     private void fetchItems() {
         try {
             Database db = new Database();
-            if(isClient) {
-            
+            if(!isClient) {
+                Produk.fetchProducts(listBarang, paginatorIndex);
             } else {
-
+                Produk.fetchSellerProduct(identity.getEmail(), paginatorIndex);
             }
         } catch(SQLException e) {
             
+        }
+    }
+    
+    private void updateItemDisplay() {
+        JPanel[] cards = {
+            productCard1,
+            productCard2,
+            productCard3,
+            productCard4,
+            productCard5,
+        };
+        
+        for(int i = 0; i < 5; i++) {
+            if(listBarang[i] == null) {
+                cards[i].setVisible(false);
+            } else {
+                cards[i].setVisible(true);
+                switch(i) {
+                    case 1:
+                        productName2.setText(listBarang[i].getDeskripsiProduk());
+                        productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock2.setText(String.format("%d", listBarang[i].getStok()));
+                        break;
+                    case 2:
+                        productName3.setText(listBarang[i].getDeskripsiProduk());
+                        productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock3.setText(String.format("%d", listBarang[i].getStok()));
+                        break;
+                    case 3:
+                        productName4.setText(listBarang[i].getDeskripsiProduk());
+                        productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock4.setText(String.format("%d", listBarang[i].getStok()));
+                        break;
+                    case 4:
+                        productName5.setText(listBarang[i].getDeskripsiProduk());
+                        productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock5.setText(String.format("%d", listBarang[i].getStok()));
+                        break;
+                    default:
+                        productName1.setText(listBarang[i].getDeskripsiProduk());
+                        productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
+                        productStock1.setText(String.format("%d", listBarang[i].getStok()));
+                }
+            }
         }
     }
     
@@ -72,11 +125,14 @@ public class Dashboard extends javax.swing.JFrame {
                 vendor.setForeground(TRANSPARENT);
             }            
         }
-        
+
         // Post-property setting GUI settings
         dashboardSaldoAnda.setText(String.format(
         "Rp. %d", saldoSekarang
         ));
+        fetchItems();
+        updateMaxBarang();
+        updateItemDisplay();
         updatePaginatorMsg();
     }
 
@@ -383,9 +439,9 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(dashboardSaldoActionText)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addComponent(dashboardSaldoActionValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dashboardSaldoActionValue, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(dashboardSaldoActionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(17, 17, 17))))
@@ -722,7 +778,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1520, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(dashboardPrevPage, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -742,12 +798,12 @@ public class Dashboard extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(productCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(dashboardAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(dashboardPaginatorMsg)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(dashboardPaginatorMsg))
-                .addContainerGap(260, Short.MAX_VALUE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(224, 224, 224))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -865,13 +921,14 @@ public class Dashboard extends javax.swing.JFrame {
         ));
     }
     private void dashboardNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardNextPageActionPerformed
-        if(paginatorIndex < (maxBarang / 5) - 1) { // floor(Banyak barang / 5) - 1
+        if(paginatorIndex < (maxBarang / 5)) {
             paginatorIndex++;
             updatePaginatorMsg();
         }
         
         // Update...
         fetchItems();
+        updateItemDisplay();
     }//GEN-LAST:event_dashboardNextPageActionPerformed
 
     private void dashboardPrevPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardPrevPageActionPerformed
@@ -879,6 +936,10 @@ public class Dashboard extends javax.swing.JFrame {
             paginatorIndex--;        
             updatePaginatorMsg();
         }
+        
+        // Update...
+        fetchItems();
+        updateItemDisplay();
     }//GEN-LAST:event_dashboardPrevPageActionPerformed
 
     private void dashboardSaldoActionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionButtonActionPerformed
