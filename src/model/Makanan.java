@@ -9,8 +9,8 @@ package model;
  * @author wwwvf
  */
 public class Makanan extends Produk implements Pajak {
-    public Makanan(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath) {
-        super(namaProduk, hargaProduk, deskripsiProduk, stok, imgPath);
+    public Makanan(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath, String penjual, String imgPenjual) {
+        super(namaProduk, hargaProduk, deskripsiProduk, stok, imgPath, penjual, imgPenjual);
     }
     
     public int hitungPajak() {

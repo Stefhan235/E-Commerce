@@ -41,7 +41,7 @@ public class Dashboard extends javax.swing.JFrame {
     private void fetchItems() {
         try {
             Database db = new Database();
-            if(!isClient) {
+            if(isClient) {
                 Produk.fetchProducts(listBarang, paginatorIndex);
             } else {
                 Produk.fetchSellerProduct(identity.getEmail(), paginatorIndex);
@@ -67,29 +67,35 @@ public class Dashboard extends javax.swing.JFrame {
                 cards[i].setVisible(true);
                 switch(i) {
                     case 1:
-                        productName2.setText(listBarang[i].getDeskripsiProduk());
+                        productName2.setText(listBarang[i].getNamaProduk());
                         productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock2.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor2.setText(listBarang[i].getPenjualProduk());
                         break;
                     case 2:
-                        productName3.setText(listBarang[i].getDeskripsiProduk());
+                        productName3.setText(listBarang[i].getNamaProduk());
                         productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock3.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor3.setText(listBarang[i].getPenjualProduk());
                         break;
                     case 3:
-                        productName4.setText(listBarang[i].getDeskripsiProduk());
+                        productName4.setText(listBarang[i].getNamaProduk());
                         productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock4.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor4.setText(listBarang[i].getPenjualProduk());
                         break;
                     case 4:
-                        productName5.setText(listBarang[i].getDeskripsiProduk());
+                        productName5.setText(listBarang[i].getNamaProduk());
                         productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock5.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor5.setText(listBarang[i].getPenjualProduk());
                         break;
                     default:
-                        productName1.setText(listBarang[i].getDeskripsiProduk());
+                        productName1.setText(listBarang[i].getNamaProduk());
                         productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock1.setText(String.format("%d", listBarang[i].getStok()));
+                        productVendor1.setText(listBarang[i].getPenjualProduk());
+
                 }
             }
         }
