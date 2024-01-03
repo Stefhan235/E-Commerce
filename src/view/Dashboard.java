@@ -10,6 +10,7 @@ import java.awt.Image;
 import static java.awt.image.ImageObserver.HEIGHT;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Set;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -1048,8 +1049,15 @@ public class Dashboard extends javax.swing.JFrame {
                 }
                 
                 // Update interface and database
-                if(isClient)updateDisplaySaldo(nominal, '+');
-                else updateDisplaySaldo(nominal, '-');
+                if(isClient){
+                    updateDisplaySaldo(nominal, '+');
+                    user.setSaldo(user.getSaldo() + nominal);
+                    
+                }
+                else {
+                    updateDisplaySaldo(nominal, '-');
+                    user.setSaldo(user.getSaldo() - nominal);
+                };
                 
                 updateDBSaldo(this.user.getEmail(), nominal);
             } catch(NumberFormatException e) {
