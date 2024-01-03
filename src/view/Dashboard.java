@@ -6,8 +6,11 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import static java.awt.image.ImageObserver.HEIGHT;
+import java.io.File;
 import java.sql.SQLException;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -24,15 +27,39 @@ import model.Seller;
 public class Dashboard extends javax.swing.JFrame {
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private static int saldoSekarang;
-    private Akun identity;
+    private Akun user;
     private boolean isClient = true;
     private static int paginatorIndex = 0;
     private static int maxBarang = 100;
     private static Produk[] listBarang = new Produk[5];
     
+    /**
+     * Creates new form Dashboard
+     */
+    public Dashboard(Akun user, boolean isClient) {
+        initComponents();
+        // GUI Settings
+        this.getContentPane().setBackground(Color.WHITE);
+        //this.getContentPane().setPreferredSize(new Dimension(940, 540));
+        dashboardAddItem.setBackground(TRANSPARENT);
+        dashboardRefresh.setBackground(TRANSPARENT);
+
+        // Property Settings
+        this.user = user;
+        this.isClient = isClient;
+        saldoSekarang = this.user.getSaldo();
+        
+        initGUI();
+    }
+
     private void updateMaxBarang() {
         try {
-            maxBarang = Produk.getProductCount();
+            if(isClient) {
+                maxBarang = Produk.getProductCount();
+            } else {
+                maxBarang = Produk.getSellerProductCount(user.getEmail());
+            }
+    
         } catch(SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
         }
@@ -44,7 +71,7 @@ public class Dashboard extends javax.swing.JFrame {
             if(isClient) {
                 Produk.fetchProducts(listBarang, paginatorIndex);
             } else {
-                Produk.fetchSellerProduct(identity.getEmail(), paginatorIndex);
+                Produk.fetchSellerProduct(listBarang, user.getEmail(), paginatorIndex);
             }
         } catch(SQLException e) {
             
@@ -71,51 +98,52 @@ public class Dashboard extends javax.swing.JFrame {
                         productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock2.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor2.setText(listBarang[i].getPenjualProduk());
+                        Gambar.render(productImg2, listBarang[i].getImgPath());
                         break;
                     case 2:
                         productName3.setText(listBarang[i].getNamaProduk());
                         productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock3.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor3.setText(listBarang[i].getPenjualProduk());
+                        Gambar.render(productImg3, listBarang[i].getImgPath());
                         break;
                     case 3:
                         productName4.setText(listBarang[i].getNamaProduk());
                         productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock4.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor4.setText(listBarang[i].getPenjualProduk());
+                        Gambar.render(productImg4, listBarang[i].getImgPath());
                         break;
                     case 4:
                         productName5.setText(listBarang[i].getNamaProduk());
                         productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock5.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor5.setText(listBarang[i].getPenjualProduk());
+                        Gambar.render(productImg5, listBarang[i].getImgPath());
                         break;
                     default:
                         productName1.setText(listBarang[i].getNamaProduk());
                         productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock1.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor1.setText(listBarang[i].getPenjualProduk());
-
+                        Gambar.render(productImg1, listBarang[i].getImgPath());
                 }
             }
         }
     }
     
-    /**
-     * Creates new form Dashboard
-     */
-    public Dashboard(Akun user, boolean isClient) {
-        initComponents();
-        // GUI Settings
-        this.getContentPane().setBackground(Color.WHITE);
-        //this.getContentPane().setPreferredSize(new Dimension(940, 540));
-        dashboardAddItem.setBackground(TRANSPARENT);
+    public void renderImage(JLabel target, String imgPath) {
+        File f = new File(String.format("src//upload//%s", imgPath));
+
+        Image img = (new ImageIcon(f.toString())).getImage().getScaledInstance(
+            target.getWidth(), target.getHeight(), Image.SCALE_SMOOTH
+        );
         
-        // Property Settings
-        this.identity = user;
-        this.isClient = isClient;
-        saldoSekarang = identity.getSaldo();
-        
+        target.setText("");
+        target.setIcon(new ImageIcon(img));
+    }
+    
+    public void initGUI() {
         // Adjust GUI based on role
         if(isClient) {
             dashboardAddItem.setVisible(false);
@@ -133,6 +161,9 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
         // Post-property setting GUI settings
+        this.requestFocusInWindow();
+        dashboardRow1.setBackground(TRANSPARENT);
+        dashboardSaldoActionButton.setBackground(Color.WHITE);
         dashboardSaldoAnda.setText(String.format(
         "Rp. %d", saldoSekarang
         ));
@@ -141,7 +172,7 @@ public class Dashboard extends javax.swing.JFrame {
         updateItemDisplay();
         updatePaginatorMsg();
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -158,6 +189,7 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardTitle = new javax.swing.JLabel();
         productCard1 = new javax.swing.JPanel();
         productImage1 = new javax.swing.JPanel();
+        productImg1 = new javax.swing.JLabel();
         productName1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         productStock1 = new javax.swing.JLabel();
@@ -174,6 +206,7 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardSaldoActionButton = new javax.swing.JButton();
         productCard2 = new javax.swing.JPanel();
         productImage2 = new javax.swing.JPanel();
+        productImg2 = new javax.swing.JLabel();
         productName2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         productStock2 = new javax.swing.JLabel();
@@ -181,6 +214,7 @@ public class Dashboard extends javax.swing.JFrame {
         productVendor2 = new javax.swing.JLabel();
         productCard3 = new javax.swing.JPanel();
         productImage3 = new javax.swing.JPanel();
+        productImg3 = new javax.swing.JLabel();
         productName3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         productStock3 = new javax.swing.JLabel();
@@ -188,6 +222,7 @@ public class Dashboard extends javax.swing.JFrame {
         productVendor3 = new javax.swing.JLabel();
         productCard4 = new javax.swing.JPanel();
         productImage4 = new javax.swing.JPanel();
+        productImg4 = new javax.swing.JLabel();
         productName4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         productStock4 = new javax.swing.JLabel();
@@ -195,6 +230,7 @@ public class Dashboard extends javax.swing.JFrame {
         productVendor4 = new javax.swing.JLabel();
         productCard5 = new javax.swing.JPanel();
         productImage5 = new javax.swing.JPanel();
+        productImg5 = new javax.swing.JLabel();
         productName5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         productStock5 = new javax.swing.JLabel();
@@ -203,6 +239,8 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardNextPage = new javax.swing.JButton();
         dashboardPrevPage = new javax.swing.JButton();
         dashboardPaginatorMsg = new javax.swing.JLabel();
+        dashboardRefresh = new javax.swing.JButton();
+        dashboardRow1 = new javax.swing.JSeparator();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -244,6 +282,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 225, 54));
+        jPanel3.setPreferredSize(new java.awt.Dimension(337, 39));
 
         dashboardTitle.setBackground(new java.awt.Color(255, 225, 54));
         dashboardTitle.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
@@ -256,7 +295,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(dashboardTitle)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,26 +315,32 @@ public class Dashboard extends javax.swing.JFrame {
 
         productImage1.setBackground(new java.awt.Color(204, 204, 204));
 
+        productImg1.setText("akjaks");
+
         javax.swing.GroupLayout productImage1Layout = new javax.swing.GroupLayout(productImage1);
         productImage1.setLayout(productImage1Layout);
         productImage1Layout.setHorizontalGroup(
             productImage1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(productImg1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         productImage1Layout.setVerticalGroup(
             productImage1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 147, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, productImage1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(productImg1, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        productName1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productName1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         productName1.setText("jLabel2");
 
         jLabel2.setText("Stok: ");
 
         productStock1.setText("69420");
 
-        productPrice1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productPrice1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        productPrice1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         productPrice1.setText("Rp. 0,00");
+        productPrice1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         productVendor1.setText("Nama Toko");
 
@@ -306,19 +351,14 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(productPrice1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(productImage1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(productCard1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(productPrice1))
-                    .addGroup(productCard1Layout.createSequentialGroup()
-                        .addGroup(productCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(productName1)
-                            .addComponent(productVendor1))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(productName1)
+                    .addComponent(productVendor1)
                     .addGroup(productCard1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(productStock1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(productStock1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         productCard1Layout.setVerticalGroup(
@@ -326,7 +366,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(productImage1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productName1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productCard1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -334,7 +374,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(productStock1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productVendor1)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productPrice1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -474,26 +514,30 @@ public class Dashboard extends javax.swing.JFrame {
 
         productImage2.setBackground(new java.awt.Color(204, 204, 204));
 
+        productImg2.setText("jLabel7");
+
         javax.swing.GroupLayout productImage2Layout = new javax.swing.GroupLayout(productImage2);
         productImage2.setLayout(productImage2Layout);
         productImage2Layout.setHorizontalGroup(
             productImage2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(productImg2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         productImage2Layout.setVerticalGroup(
             productImage2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 147, Short.MAX_VALUE)
+            .addComponent(productImg2, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
         );
 
-        productName2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productName2.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         productName2.setText("jLabel2");
 
         jLabel3.setText("Stok: ");
 
         productStock2.setText("69420");
 
-        productPrice2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productPrice2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        productPrice2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         productPrice2.setText("Rp. 0,00");
+        productPrice2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         productVendor2.setText("Nama Toko");
 
@@ -504,14 +548,12 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(productPrice2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(productImage2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(productCard2Layout.createSequentialGroup()
-                        .addGap(0, 161, Short.MAX_VALUE)
-                        .addComponent(productPrice2))
                     .addGroup(productCard2Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(productStock2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(productStock2, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
                     .addGroup(productCard2Layout.createSequentialGroup()
                         .addGroup(productCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(productName2)
@@ -524,7 +566,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(productImage2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productName2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -532,7 +574,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(productStock2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productVendor2)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productPrice2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -547,26 +589,32 @@ public class Dashboard extends javax.swing.JFrame {
 
         productImage3.setBackground(new java.awt.Color(204, 204, 204));
 
+        productImg3.setText("jLabel7");
+
         javax.swing.GroupLayout productImage3Layout = new javax.swing.GroupLayout(productImage3);
         productImage3.setLayout(productImage3Layout);
         productImage3Layout.setHorizontalGroup(
             productImage3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(productImg3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         productImage3Layout.setVerticalGroup(
             productImage3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 147, Short.MAX_VALUE)
+            .addGroup(productImage3Layout.createSequentialGroup()
+                .addComponent(productImg3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        productName3.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productName3.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         productName3.setText("jLabel2");
 
         jLabel4.setText("Stok: ");
 
         productStock3.setText("69420");
 
-        productPrice3.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productPrice3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        productPrice3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         productPrice3.setText("Rp. 0,00");
+        productPrice3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 
         productVendor3.setText("Nama Toko");
 
@@ -577,14 +625,12 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(productPrice3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(productImage3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(productCard3Layout.createSequentialGroup()
-                        .addGap(0, 161, Short.MAX_VALUE)
-                        .addComponent(productPrice3))
                     .addGroup(productCard3Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(productStock3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(productStock3, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
                     .addGroup(productCard3Layout.createSequentialGroup()
                         .addGroup(productCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(productName3)
@@ -597,7 +643,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(productImage3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productName3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productCard3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -605,9 +651,9 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(productStock3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productVendor3)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productPrice3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         productCard4.setBackground(new java.awt.Color(255, 255, 255));
@@ -620,25 +666,30 @@ public class Dashboard extends javax.swing.JFrame {
 
         productImage4.setBackground(new java.awt.Color(204, 204, 204));
 
+        productImg4.setText("jLabel7");
+
         javax.swing.GroupLayout productImage4Layout = new javax.swing.GroupLayout(productImage4);
         productImage4.setLayout(productImage4Layout);
         productImage4Layout.setHorizontalGroup(
             productImage4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(productImg4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         productImage4Layout.setVerticalGroup(
             productImage4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 147, Short.MAX_VALUE)
+            .addGroup(productImage4Layout.createSequentialGroup()
+                .addComponent(productImg4, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        productName4.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productName4.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         productName4.setText("jLabel2");
 
         jLabel5.setText("Stok: ");
 
         productStock4.setText("69420");
 
-        productPrice4.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productPrice4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        productPrice4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         productPrice4.setText("Rp. 0,00");
 
         productVendor4.setText("Nama Toko");
@@ -650,14 +701,12 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(productPrice4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(productImage4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(productCard4Layout.createSequentialGroup()
-                        .addGap(0, 161, Short.MAX_VALUE)
-                        .addComponent(productPrice4))
                     .addGroup(productCard4Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(productStock4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(productStock4, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
                     .addGroup(productCard4Layout.createSequentialGroup()
                         .addGroup(productCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(productName4)
@@ -670,7 +719,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(productImage4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productName4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -678,7 +727,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(productStock4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productVendor4)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productPrice4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -693,25 +742,30 @@ public class Dashboard extends javax.swing.JFrame {
 
         productImage5.setBackground(new java.awt.Color(204, 204, 204));
 
+        productImg5.setText("jLabel7");
+
         javax.swing.GroupLayout productImage5Layout = new javax.swing.GroupLayout(productImage5);
         productImage5.setLayout(productImage5Layout);
         productImage5Layout.setHorizontalGroup(
             productImage5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addComponent(productImg5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         productImage5Layout.setVerticalGroup(
             productImage5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 147, Short.MAX_VALUE)
+            .addGroup(productImage5Layout.createSequentialGroup()
+                .addComponent(productImg5, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        productName5.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productName5.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         productName5.setText("jLabel2");
 
         jLabel6.setText("Stok: ");
 
         productStock5.setText("69420");
 
-        productPrice5.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        productPrice5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        productPrice5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         productPrice5.setText("Rp. 0,00");
 
         productVendor5.setText("Nama Toko");
@@ -724,13 +778,11 @@ public class Dashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(productCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(productImage5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(productCard5Layout.createSequentialGroup()
-                        .addGap(0, 161, Short.MAX_VALUE)
-                        .addComponent(productPrice5))
+                    .addComponent(productPrice5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(productCard5Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(productStock5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(productStock5, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE))
                     .addGroup(productCard5Layout.createSequentialGroup()
                         .addGroup(productCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(productName5)
@@ -743,7 +795,7 @@ public class Dashboard extends javax.swing.JFrame {
             .addGroup(productCard5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(productImage5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productName5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -751,7 +803,7 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(productStock5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productVendor5)
-                .addGap(29, 29, 29)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productPrice5)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -777,66 +829,97 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardPaginatorMsg.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         dashboardPaginatorMsg.setText("Menampilkan ... dari ... barang");
 
+        dashboardRefresh.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
+        dashboardRefresh.setText("Perbarui");
+        dashboardRefresh.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 225, 54), 2, true));
+        dashboardRefresh.setMaximumSize(new java.awt.Dimension(77, 31));
+        dashboardRefresh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                dashboardRefreshMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                dashboardRefreshMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                dashboardRefreshMouseExited(evt);
+            }
+        });
+        dashboardRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dashboardRefreshActionPerformed(evt);
+            }
+        });
+
+        dashboardRow1.setForeground(new java.awt.Color(255, 255, 255));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1520, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1676, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dashboardRow1, javax.swing.GroupLayout.PREFERRED_SIZE, 558, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(dashboardPrevPage, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(dashboardNextPage, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(productCard1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(productCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(productCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(productCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(productCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(productCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(dashboardAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(productCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(productCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(productCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(productCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(dashboardPaginatorMsg)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(224, 224, 224))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(dashboardRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(dashboardAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(380, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dashboardAddItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(23, 23, 23)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(productCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(productCard1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(productCard3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(productCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(productCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(dashboardRefresh, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dashboardAddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(1, 1, 1)
+                .addComponent(dashboardRow1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(productCard3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(productCard4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(productCard5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(productCard2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(productCard1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(dashboardPaginatorMsg)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dashboardPrevPage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dashboardNextPage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
         );
 
         pack();
@@ -851,11 +934,16 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardAddItemMouseExited
 
     private void productCard1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard1MouseClicked
-       
+       produkDisplay page = new produkDisplay(
+            this, true, 
+               listBarang[0], user, 
+               listBarang[0].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard1MouseClicked
 
     private void dashboardAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardAddItemActionPerformed
-        produkTambah page = new produkTambah(this, true, identity.getEmail());
+        produkTambah page = new produkTambah(this, true, user.getEmail());
         page.setVisible(true);
     }//GEN-LAST:event_dashboardAddItemActionPerformed
 
@@ -904,30 +992,50 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardSaldoActionValueFocusLost
 
     private void productCard2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard2MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[1], user,
+            listBarang[1].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard2MouseClicked
 
     private void productCard3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard3MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[2], user, 
+            listBarang[2].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard3MouseClicked
 
     private void productCard4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard4MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[3], user,
+            listBarang[3].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard4MouseClicked
 
     private void productCard5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard5MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[4], user,
+            listBarang[4].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard5MouseClicked
 
     private void updatePaginatorMsg() {
         dashboardPaginatorMsg.setText(String.format(
            "Menampilkan %d dari %d barang", 
-            Math.min((paginatorIndex*5) + 1, maxBarang), 
+            Math.min(((paginatorIndex + 1)*5), maxBarang), 
             maxBarang
         ));
     }
     private void dashboardNextPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardNextPageActionPerformed
-        if(paginatorIndex < (maxBarang / 5)) {
+        if(paginatorIndex < (maxBarang / 5) && (paginatorIndex + 1)*5 != maxBarang) {
             paginatorIndex++;
             updatePaginatorMsg();
         }
@@ -964,14 +1072,34 @@ public class Dashboard extends javax.swing.JFrame {
                 if(isClient)updateDisplaySaldo(nominal, '+');
                 else updateDisplaySaldo(nominal, '-');
                 
-                updateDBSaldo(this.identity.getEmail(), nominal);
+                updateDBSaldo(this.user.getEmail(), nominal);
             } catch(NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
             }
         }
         
+        this.requestFocusInWindow();
         dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
     }//GEN-LAST:event_dashboardSaldoActionButtonActionPerformed
+
+    private void dashboardRefreshMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashboardRefreshMouseEntered
+        dashboardRefresh.setBackground(new Color(200, 200, 140, 1));
+    }//GEN-LAST:event_dashboardRefreshMouseEntered
+
+    private void dashboardRefreshMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashboardRefreshMouseExited
+        dashboardRefresh.setBackground(TRANSPARENT);
+    }//GEN-LAST:event_dashboardRefreshMouseExited
+
+    private void dashboardRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardRefreshActionPerformed
+        updateMaxBarang();
+        fetchItems();
+        updateItemDisplay();
+        updatePaginatorMsg();
+    }//GEN-LAST:event_dashboardRefreshActionPerformed
+
+    private void dashboardRefreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashboardRefreshMouseClicked
+
+    }//GEN-LAST:event_dashboardRefreshMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1003,7 +1131,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard(new Seller("", "", "", "", 0, ""), false).setVisible(true);
+                new Dashboard(new Seller("", "", "ashdashdlashdlashas", "", 0, ""), false).setVisible(true);
             }
         });
     }
@@ -1014,6 +1142,8 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JButton dashboardNextPage;
     private javax.swing.JLabel dashboardPaginatorMsg;
     private javax.swing.JButton dashboardPrevPage;
+    private javax.swing.JButton dashboardRefresh;
+    private javax.swing.JSeparator dashboardRow1;
     private javax.swing.JButton dashboardSaldoActionButton;
     private javax.swing.JLabel dashboardSaldoActionText;
     private javax.swing.JTextField dashboardSaldoActionValue;
@@ -1041,6 +1171,11 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JPanel productImage3;
     private javax.swing.JPanel productImage4;
     private javax.swing.JPanel productImage5;
+    private javax.swing.JLabel productImg1;
+    private javax.swing.JLabel productImg2;
+    private javax.swing.JLabel productImg3;
+    private javax.swing.JLabel productImg4;
+    private javax.swing.JLabel productImg5;
     private javax.swing.JLabel productName1;
     private javax.swing.JLabel productName2;
     private javax.swing.JLabel productName3;

@@ -88,6 +88,47 @@ public class Produk {
         return res.getInt("banyak_barang");
     }
     
+    static private Produk categorizeProduct(ResultSet res) throws SQLException {
+        String kategori = res.getString("kategori");
+        Produk categorizedProduct;
+        switch(kategori) {
+            case "Minuman":
+                categorizedProduct =  new Minuman(
+                    res.getString("nama"),
+                    res. getInt("harga"),
+                    res.getString("deskripsi"),
+                    res.getInt("stok"),
+                    res.getString("image_path"),
+                    res.getString("nama_toko"),
+                    res.getString("sImgPath")
+                );
+                break;
+            case "Makanan":
+                categorizedProduct =  new Makanan(
+                    res.getString("nama"),
+                    res. getInt("harga"),
+                    res.getString("deskripsi"),
+                    res.getInt("stok"),
+                    res.getString("image_path"),
+                    res.getString("nama_toko"),
+                    res.getString("sImgPath")
+                );
+                break;
+            default:
+                categorizedProduct =  new Elektronik(
+                    res.getString("nama"),
+                    res. getInt("harga"),
+                    res.getString("deskripsi"),
+                    res.getInt("stok"),
+                    res.getString("image_path"),
+                    res.getString("nama_toko"),
+                    res.getString("sImgPath")
+                );
+                break;
+        }
+        return categorizedProduct;
+    }
+    
     static public void fetchProducts(Produk[] produkList, int offset) throws SQLException {
         Database db = new Database();
         String sql = String.format(
@@ -98,15 +139,7 @@ public class Produk {
         ResultSet res = db.getData(sql);
         int ptr = 0;
         while(res.next()) {
-            produkList[ptr] = new Produk(
-                res.getString("nama"),
-                res. getInt("harga"),
-                res.getString("deskripsi"),
-                res.getInt("stok"),
-                res.getString("image_path"),
-                res.getString("nama_toko"),
-                res.getString("sImgPath")
-            );
+            produkList[ptr] = categorizeProduct(res);
             ptr++;
         }
 
@@ -115,15 +148,35 @@ public class Produk {
             produkList[ptr] = null;
             ptr++;
         }
-        
     }
     
-    static public void fetchSellerProduct(String seller, int offset) throws SQLException {
+    static public int getSellerProductCount(String seller) throws SQLException {
+        Database db = new Database();
+        String sql = String.format("SELECT COUNT(*) AS banyak_barang FROM produk WHERE penjual = '%s'", seller);
+        ResultSet res = db.getData(sql);
+        
+        res.next();
+        return res.getInt("banyak_barang");
+    }
+    
+    static public void fetchSellerProduct(Produk[] produkList, String seller, int offset) throws SQLException {
         Database db = new Database();
         String sql = String.format(
-            "SELECT * FROM produk WHERE penjual='%s' LIMIT 5 OFFSET %d",
+           "SELECT p.*, s.nama_toko AS nama_toko, s.image_path AS sImgPath FROM produk p INNER JOIN seller s ON p.penjual = s.email WHERE p.penjual='%s' ORDER BY id_barang LIMIT 5 OFFSET %d;",
             seller, offset*5
         );
-        ResultSet rs = db.getData(sql);
+        
+        ResultSet res = db.getData(sql);
+        int ptr = 0;
+        while(res.next()) {
+            produkList[ptr] = categorizeProduct(res);
+            ptr++;
+        }
+
+        // Set the rest of items to null if number of products in database is insufficient
+        while(ptr < 5) {
+            produkList[ptr] = null;
+            ptr++;
+        }
     }
 }
