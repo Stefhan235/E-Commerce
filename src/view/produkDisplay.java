@@ -25,7 +25,7 @@ public class produkDisplay extends javax.swing.JDialog {
     /**
      * Creates new form produkDisplay
      */
-    public produkDisplay(java.awt.Frame parent, boolean modal, Produk product, Akun user, String productImg) {
+    public produkDisplay(java.awt.Frame parent, boolean modal, Produk product, Akun user) {
         super(parent, modal);
         initComponents();
         this.getContentPane().setBackground(Color.WHITE);
@@ -33,33 +33,41 @@ public class produkDisplay extends javax.swing.JDialog {
         // Disable spinner text field
         // https://stackoverflow.com/questions/2902101/how-to-set-jspinner-as-non-editable
         ((DefaultEditor) produkDisplayAmount.getEditor()).getTextField().setEditable(false);
-                
+        
+        this.product = product;
+        this.user = user;
+        updateGUI();
+    }
+
+    private void updateGUI() {
+        System.out.println(user.getImgPath());
+        // Seller related update
+        if(!(user instanceof Seller)) {
+            produkDisplaySellerDetails.setVisible(false);
+            produkDisplayPurchasePanel.setVisible(false);
+        } else {
+            produkDisplayConfigureProduct.setVisible(false);
+            produkDisplaySellerInfo.setText(product.getPenjual().getNo_telepon());
+            produkDisplaySellerName.setText(product.getPenjual().getNama());
+            Gambar.render(produkDisplaySellerImg, product.getPenjual().getImgPath());
+        }
+        
+        // Product related update
         if(product instanceof Minuman ) {
-            this.productCategory = "Minuman";
+            produkDisplayCategory.setText("Minuman");
             produkDisplayTaxPercentage.setText("(1%)");
         } else if(product instanceof Makanan ) {
-            this.productCategory = "Makanan";
+            produkDisplayCategory.setText("Makanan");
             produkDisplayTaxPercentage.setText("(2%)");
         } else {
-            this.productCategory = "Elektronik";
+            produkDisplayCategory.setText("Elektronik");
             produkDisplayTaxPercentage.setText("(10%)");
         }
         
-        this.product = product;
-        updateGUI(user, productImg);
-    }
-
-    private void updateGUI(Akun user, String productImg) {
-        if((user instanceof Seller)) {
-            produkDisplaySellerDetails.setVisible(false);
-            produkDisplayPurchasePanel.setVisible(false);
-        }
-        
-        Gambar.render(produkDisplayImg, productImg);
+        Gambar.render(produkDisplayImg, product.getImgPath());
         produkDisplayName.setText(product.getNamaProduk());
         produkDisplayPrice.setText(String.valueOf(product.getHargaProduk()));
         produkDisplayStock.setText(String.valueOf(product.getStok()));
-        produkDisplayCategory.setText(productCategory);
         produkDisplayDescription.setText(product.getDeskripsiProduk());
 
     }
@@ -159,6 +167,8 @@ public class produkDisplay extends javax.swing.JDialog {
         produkDisplayName.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         produkDisplayName.setText("Nama Produk");
 
+        produkDisplaySellerDetails.setBackground(new java.awt.Color(255, 255, 255));
+
         jPanel3.setBackground(new java.awt.Color(204, 204, 204));
 
         produkDisplaySellerImg.setText("jLabel3");
@@ -246,8 +256,10 @@ public class produkDisplay extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        produkDisplayPurchasePanel.setBackground(new java.awt.Color(255, 255, 255));
         produkDisplayPurchasePanel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 2, true));
 
+        produkDisplayPurchaseButton.setBackground(new java.awt.Color(255, 225, 54));
         produkDisplayPurchaseButton.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         produkDisplayPurchaseButton.setText("Beli");
 
@@ -325,9 +337,6 @@ public class produkDisplay extends javax.swing.JDialog {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel2))
                                     .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(produkDisplayPurchaseButton))
-                                    .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
                                         .addGroup(produkDisplayPurchasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel11)
                                             .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
@@ -339,7 +348,10 @@ public class produkDisplay extends javax.swing.JDialog {
                                             .addComponent(produkDisplayTax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                             .addComponent(produkDisplaySubtotal, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
                                         .addGap(37, 37, 37)
-                                        .addComponent(produkDisplayGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addComponent(produkDisplayGrandTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, produkDisplayPurchasePanelLayout.createSequentialGroup()
+                                        .addGap(0, 0, Short.MAX_VALUE)
+                                        .addComponent(produkDisplayPurchaseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(22, 22, 22))))
         );
         produkDisplayPurchasePanelLayout.setVerticalGroup(
@@ -356,9 +368,7 @@ public class produkDisplay extends javax.swing.JDialog {
                             .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(produkDisplayGrandTotal)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(produkDisplayPurchaseButton))
+                                .addComponent(produkDisplayGrandTotal))
                             .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
                                 .addGroup(produkDisplayPurchasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel4)
@@ -378,7 +388,9 @@ public class produkDisplay extends javax.swing.JDialog {
                                     .addComponent(jLabel12)
                                     .addComponent(produkDisplayTax)
                                     .addComponent(produkDisplayTaxPercentage))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(produkDisplayPurchaseButton)
+                        .addGap(0, 2, Short.MAX_VALUE))
                     .addComponent(jSeparator3))
                 .addContainerGap())
         );
@@ -471,7 +483,7 @@ public class produkDisplay extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(produkDisplayBackButton)
                     .addComponent(produkDisplayConfigureProduct))
-                .addGap(0, 181, Short.MAX_VALUE))
+                .addGap(0, 100, Short.MAX_VALUE))
         );
 
         pack();
@@ -506,6 +518,12 @@ public class produkDisplay extends javax.swing.JDialog {
         }
     }
     private void produkDisplayAmountStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_produkDisplayAmountStateChanged
+        int itemCount = (int) produkDisplayAmount.getValue();
+        if(itemCount < 0) {
+            produkDisplayAmount.setValue(0);
+        } else if(itemCount > product.getStok()) {
+            produkDisplayAmount.setValue(product.getStok());
+        }
         updateReceipt();
     }//GEN-LAST:event_produkDisplayAmountStateChanged
 
@@ -539,7 +557,7 @@ public class produkDisplay extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                produkDisplay dialog = new produkDisplay(new javax.swing.JFrame(), true, null, null, null);
+                produkDisplay dialog = new produkDisplay(new javax.swing.JFrame(), true, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

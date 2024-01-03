@@ -6,37 +6,28 @@ import java.sql.SQLException;
 public class Produk {
     //private int idProduk;
     private String namaProduk;
-    private int hargaProduk;
-    private String deskripsiProduk;
-    private int stok;
     private String imgPath;
-    private String penjualProduk;
-    private String imgPenjual;
+    private String deskripsiProduk;
+    private int hargaProduk;
+    private int stok;
     
-    public Produk(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath, String penjualProduk, String imgPenjual){
+    private Seller penjual;
+    
+    public Produk(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath, Seller penjual){
         this.namaProduk = namaProduk;
         this.hargaProduk = hargaProduk;
         this.deskripsiProduk = deskripsiProduk;
         this.stok = stok;
         this.imgPath = imgPath;
-        this.penjualProduk = penjualProduk;
-        this.imgPenjual = imgPenjual;
+        this.penjual = penjual;
     }
 
-    public String getPenjualProduk() {
-        return penjualProduk;
+    public Seller getPenjual() {
+        return penjual;
     }
 
-    public void setPenjualProduk(String penjualProduk) {
-        this.penjualProduk = penjualProduk;
-    }
-
-    public String getImgPenjual() {
-        return imgPenjual;
-    }
-
-    public void setImgPenjual(String imgPenjual) {
-        this.imgPenjual = imgPenjual;
+    public void setPenjual(Seller penjual) {
+        this.penjual = penjual;
     }
 
     public String getNamaProduk() {
@@ -72,7 +63,7 @@ public class Produk {
     }
 
     public String getImgPath() {
-        return imgPath;
+        return this.imgPath;
     }
 
     public void setImgPath(String imgPath) {
@@ -99,8 +90,14 @@ public class Produk {
                     res.getString("deskripsi"),
                     res.getInt("stok"),
                     res.getString("image_path"),
-                    res.getString("nama_toko"),
-                    res.getString("sImgPath")
+                    new Seller(
+                        res.getString("sNama"),
+                        res.getString("sOwnerName"),
+                        res.getString("sEmail"),
+                        res.getString("sNoTelp"),
+                        res.getInt("sSaldo"),
+                        res.getString("sImgPath")
+                    )
                 );
                 break;
             case "Makanan":
@@ -110,8 +107,14 @@ public class Produk {
                     res.getString("deskripsi"),
                     res.getInt("stok"),
                     res.getString("image_path"),
-                    res.getString("nama_toko"),
-                    res.getString("sImgPath")
+                    new Seller(
+                        res.getString("sNama"),
+                        res.getString("sOwnerName"),
+                        res.getString("sEmail"),
+                        res.getString("sNoTelp"),
+                        res.getInt("sSaldo"),
+                        res.getString("sImgPath")
+                    )
                 );
                 break;
             default:
@@ -121,8 +124,14 @@ public class Produk {
                     res.getString("deskripsi"),
                     res.getInt("stok"),
                     res.getString("image_path"),
-                    res.getString("nama_toko"),
-                    res.getString("sImgPath")
+                    new Seller(
+                        res.getString("sNama"),
+                        res.getString("sOwnerName"),
+                        res.getString("sEmail"),
+                        res.getString("sNoTelp"),
+                        res.getInt("sSaldo"),
+                        res.getString("sImgPath")
+                    )
                 );
                 break;
         }
@@ -132,7 +141,7 @@ public class Produk {
     static public void fetchProducts(Produk[] produkList, int offset) throws SQLException {
         Database db = new Database();
         String sql = String.format(
-            "SELECT p.*, s.nama_toko AS nama_toko, s.image_path AS sImgPath FROM produk p INNER JOIN seller s ON p.penjual = s.email ORDER BY id_barang LIMIT 5 OFFSET %d;",
+            "SELECT p.*, s.nama_toko AS sNama, s.nama AS sOwnerName, s.email as sEmail, s.image_path AS sImgPath, s.nomor_telepon AS sNoTelp, s.saldo AS sSaldo FROM produk p INNER JOIN seller s ON p.penjual = s.email ORDER BY id_barang LIMIT 5 OFFSET %d;",
             offset*5
         );
         
@@ -162,7 +171,7 @@ public class Produk {
     static public void fetchSellerProduct(Produk[] produkList, String seller, int offset) throws SQLException {
         Database db = new Database();
         String sql = String.format(
-           "SELECT p.*, s.nama_toko AS nama_toko, s.image_path AS sImgPath FROM produk p INNER JOIN seller s ON p.penjual = s.email WHERE p.penjual='%s' ORDER BY id_barang LIMIT 5 OFFSET %d;",
+            "SELECT p.*, s.nama_toko AS sNama, s.nama AS sOwnerName, s.email as sEmail, s.image_path AS sImgPath, s.nomor_telepon AS sNoTelp, s.saldo AS sSaldo FROM produk p INNER JOIN seller s ON p.penjual = s.email WHERE p.penjual='%s' ORDER BY id_barang LIMIT 5 OFFSET %d;",
             seller, offset*5
         );
         
