@@ -27,7 +27,7 @@ import model.Seller;
 public class Dashboard extends javax.swing.JFrame {
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private static int saldoSekarang;
-    private Akun identity;
+    private Akun user;
     private boolean isClient = true;
     private static int paginatorIndex = 0;
     private static int maxBarang = 100;
@@ -45,9 +45,9 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardRefresh.setBackground(TRANSPARENT);
 
         // Property Settings
-        this.identity = user;
+        this.user = user;
         this.isClient = isClient;
-        saldoSekarang = identity.getSaldo();
+        saldoSekarang = this.user.getSaldo();
         
         initGUI();
     }
@@ -57,7 +57,7 @@ public class Dashboard extends javax.swing.JFrame {
             if(isClient) {
                 maxBarang = Produk.getProductCount();
             } else {
-                maxBarang = Produk.getSellerProductCount(identity.getEmail());
+                maxBarang = Produk.getSellerProductCount(user.getEmail());
             }
     
         } catch(SQLException e) {
@@ -71,7 +71,7 @@ public class Dashboard extends javax.swing.JFrame {
             if(isClient) {
                 Produk.fetchProducts(listBarang, paginatorIndex);
             } else {
-                Produk.fetchSellerProduct(listBarang, identity.getEmail(), paginatorIndex);
+                Produk.fetchSellerProduct(listBarang, user.getEmail(), paginatorIndex);
             }
         } catch(SQLException e) {
             
@@ -161,6 +161,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
 
         // Post-property setting GUI settings
+        this.requestFocusInWindow();
         dashboardRow1.setBackground(TRANSPARENT);
         dashboardSaldoActionButton.setBackground(Color.WHITE);
         dashboardSaldoAnda.setText(String.format(
@@ -933,11 +934,16 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardAddItemMouseExited
 
     private void productCard1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard1MouseClicked
-       
+       produkDisplay page = new produkDisplay(
+            this, true, 
+               listBarang[0], user, 
+               listBarang[0].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard1MouseClicked
 
     private void dashboardAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardAddItemActionPerformed
-        produkTambah page = new produkTambah(this, true, identity.getEmail());
+        produkTambah page = new produkTambah(this, true, user.getEmail());
         page.setVisible(true);
     }//GEN-LAST:event_dashboardAddItemActionPerformed
 
@@ -986,25 +992,45 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardSaldoActionValueFocusLost
 
     private void productCard2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard2MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[1], user,
+            listBarang[1].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard2MouseClicked
 
     private void productCard3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard3MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[2], user, 
+            listBarang[2].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard3MouseClicked
 
     private void productCard4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard4MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[3], user,
+            listBarang[3].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard4MouseClicked
 
     private void productCard5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard5MouseClicked
-        // TODO add your handling code here:
+       produkDisplay page = new produkDisplay(
+            this, true, 
+            listBarang[4], user,
+            listBarang[4].getImgPath()
+       );
+       page.setVisible(true);
     }//GEN-LAST:event_productCard5MouseClicked
 
     private void updatePaginatorMsg() {
         dashboardPaginatorMsg.setText(String.format(
            "Menampilkan %d dari %d barang", 
-            Math.min((paginatorIndex*5) + 1, maxBarang), 
+            Math.min(((paginatorIndex + 1)*5), maxBarang), 
             maxBarang
         ));
     }
@@ -1046,12 +1072,13 @@ public class Dashboard extends javax.swing.JFrame {
                 if(isClient)updateDisplaySaldo(nominal, '+');
                 else updateDisplaySaldo(nominal, '-');
                 
-                updateDBSaldo(this.identity.getEmail(), nominal);
+                updateDBSaldo(this.user.getEmail(), nominal);
             } catch(NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
             }
         }
         
+        this.requestFocusInWindow();
         dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
     }//GEN-LAST:event_dashboardSaldoActionButtonActionPerformed
 
