@@ -55,6 +55,7 @@ public class produkDisplay extends javax.swing.JDialog {
             produkDisplayPurchasePanel.setVisible(false);
         }
         
+        Gambar.render(produkDisplayImg, productImg);
         produkDisplayName.setText(product.getNamaProduk());
         produkDisplayPrice.setText(String.valueOf(product.getHargaProduk()));
         produkDisplayStock.setText(String.valueOf(product.getStok()));

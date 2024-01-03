@@ -98,35 +98,35 @@ public class Dashboard extends javax.swing.JFrame {
                         productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock2.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor2.setText(listBarang[i].getPenjualProduk());
-                        renderImage(productImg2, listBarang[i].getImgPath());
+                        Gambar.render(productImg2, listBarang[i].getImgPath());
                         break;
                     case 2:
                         productName3.setText(listBarang[i].getNamaProduk());
                         productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock3.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor3.setText(listBarang[i].getPenjualProduk());
-                        renderImage(productImg3, listBarang[i].getImgPath());
+                        Gambar.render(productImg3, listBarang[i].getImgPath());
                         break;
                     case 3:
                         productName4.setText(listBarang[i].getNamaProduk());
                         productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock4.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor4.setText(listBarang[i].getPenjualProduk());
-                        renderImage(productImg4, listBarang[i].getImgPath());
+                        Gambar.render(productImg4, listBarang[i].getImgPath());
                         break;
                     case 4:
                         productName5.setText(listBarang[i].getNamaProduk());
                         productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock5.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor5.setText(listBarang[i].getPenjualProduk());
-                        renderImage(productImg5, listBarang[i].getImgPath());
+                        Gambar.render(productImg5, listBarang[i].getImgPath());
                         break;
                     default:
                         productName1.setText(listBarang[i].getNamaProduk());
                         productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock1.setText(String.format("%d", listBarang[i].getStok()));
                         productVendor1.setText(listBarang[i].getPenjualProduk());
-                        renderImage(productImg1, listBarang[i].getImgPath());
+                        Gambar.render(productImg1, listBarang[i].getImgPath());
                 }
             }
         }
