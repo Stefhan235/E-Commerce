@@ -97,35 +97,35 @@ public class Dashboard extends javax.swing.JFrame {
                         productName2.setText(listBarang[i].getNamaProduk());
                         productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock2.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor2.setText(listBarang[i].getPenjualProduk());
+                        productVendor4.setText(listBarang[i].getPenjual().getNama());
                         Gambar.render(productImg2, listBarang[i].getImgPath());
                         break;
                     case 2:
                         productName3.setText(listBarang[i].getNamaProduk());
                         productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock3.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor3.setText(listBarang[i].getPenjualProduk());
+                        productVendor4.setText(listBarang[i].getPenjual().getNama());
                         Gambar.render(productImg3, listBarang[i].getImgPath());
                         break;
                     case 3:
                         productName4.setText(listBarang[i].getNamaProduk());
                         productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock4.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjualProduk());
+                        productVendor4.setText(listBarang[i].getPenjual().getNama());
                         Gambar.render(productImg4, listBarang[i].getImgPath());
                         break;
                     case 4:
                         productName5.setText(listBarang[i].getNamaProduk());
                         productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock5.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor5.setText(listBarang[i].getPenjualProduk());
+                        productVendor4.setText(listBarang[i].getPenjual().getNama());
                         Gambar.render(productImg5, listBarang[i].getImgPath());
                         break;
                     default:
                         productName1.setText(listBarang[i].getNamaProduk());
                         productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock1.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor1.setText(listBarang[i].getPenjualProduk());
+                        productVendor4.setText(listBarang[i].getPenjual().getNama());
                         Gambar.render(productImg1, listBarang[i].getImgPath());
                 }
             }
@@ -832,7 +832,6 @@ public class Dashboard extends javax.swing.JFrame {
         dashboardRefresh.setFont(new java.awt.Font("Segoe UI", 0, 20)); // NOI18N
         dashboardRefresh.setText("Perbarui");
         dashboardRefresh.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 225, 54), 2, true));
-        dashboardRefresh.setMaximumSize(new java.awt.Dimension(77, 31));
         dashboardRefresh.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 dashboardRefreshMouseClicked(evt);
@@ -919,7 +918,7 @@ public class Dashboard extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dashboardPrevPage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dashboardNextPage, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(30, 30, 30))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
@@ -934,11 +933,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardAddItemMouseExited
 
     private void productCard1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard1MouseClicked
-       produkDisplay page = new produkDisplay(
-            this, true, 
-               listBarang[0], user, 
-               listBarang[0].getImgPath()
-       );
+       produkDisplay page = new produkDisplay(this, true, listBarang[0], user);
        page.setVisible(true);
     }//GEN-LAST:event_productCard1MouseClicked
 
@@ -992,38 +987,22 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_dashboardSaldoActionValueFocusLost
 
     private void productCard2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard2MouseClicked
-       produkDisplay page = new produkDisplay(
-            this, true, 
-            listBarang[1], user,
-            listBarang[1].getImgPath()
-       );
+       produkDisplay page = new produkDisplay(this, true, listBarang[1], user);
        page.setVisible(true);
     }//GEN-LAST:event_productCard2MouseClicked
 
     private void productCard3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard3MouseClicked
-       produkDisplay page = new produkDisplay(
-            this, true, 
-            listBarang[2], user, 
-            listBarang[2].getImgPath()
-       );
+       produkDisplay page = new produkDisplay(this, true, listBarang[2], user);
        page.setVisible(true);
     }//GEN-LAST:event_productCard3MouseClicked
 
     private void productCard4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard4MouseClicked
-       produkDisplay page = new produkDisplay(
-            this, true, 
-            listBarang[3], user,
-            listBarang[3].getImgPath()
-       );
+       produkDisplay page = new produkDisplay(this, true, listBarang[3], user);
        page.setVisible(true);
     }//GEN-LAST:event_productCard4MouseClicked
 
     private void productCard5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_productCard5MouseClicked
-       produkDisplay page = new produkDisplay(
-            this, true, 
-            listBarang[4], user,
-            listBarang[4].getImgPath()
-       );
+       produkDisplay page = new produkDisplay(this, true, listBarang[4], user);
        page.setVisible(true);
     }//GEN-LAST:event_productCard5MouseClicked
 
@@ -1131,7 +1110,7 @@ public class Dashboard extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard(new Seller("", "", "ashdashdlashdlashas", "", 0, ""), false).setVisible(true);
+                new Dashboard(new Seller("Jono Fumos", "Jono", "ashdashdlashdlashas", "012324123", 0, "ashdashdlashdlashas.png"), false).setVisible(true);
             }
         });
     }

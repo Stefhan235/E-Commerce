@@ -9,8 +9,8 @@ package model;
  * @author wwwvf
  */
 public class Elektronik extends Produk implements Pajak { 
-    public Elektronik(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath, String penjual, String imgPenjual) {
-        super(namaProduk, hargaProduk, deskripsiProduk, stok, imgPath, penjual, imgPenjual);
+    public Elektronik(String namaProduk, int hargaProduk, String deskripsiProduk, int stok, String imgPath, Seller penjual) {
+        super(namaProduk, hargaProduk, deskripsiProduk, stok, imgPath, penjual);
     }
     
     public int hitungPajak() {
