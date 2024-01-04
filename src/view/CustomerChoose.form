@@ -84,7 +84,7 @@
                           <Component id="signupBtn" min="-2" pref="260" max="-2" attributes="0"/>
                           <Component id="signinBtn" min="-2" pref="260" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="46" max="32767" attributes="0"/>
+                      <EmptySpace pref="45" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -141,7 +141,7 @@
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/view/assets/customerChoose.jpg"/>
+              <Image iconType="3" name="/view/assets/imgCustomerChoose.jpg"/>
             </Property>
           </Properties>
         </Component>
