@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Produk {
-    //private int idProduk;
+    private int idProduk;
     private String namaProduk;
     private String imgPath;
     private String deskripsiProduk;
@@ -21,7 +21,15 @@ public class Produk {
         this.imgPath = imgPath;
         this.penjual = penjual;
     }
+    
+    public int getIdProduk() {
+        return idProduk;
+    }
 
+    public void setIdProduk(int idProduk) {
+        this.idProduk = idProduk;
+    }
+    
     public Seller getPenjual() {
         return penjual;
     }
@@ -135,6 +143,7 @@ public class Produk {
                 );
                 break;
         }
+        categorizedProduct.setIdProduk(res.getInt("id_barang"));
         return categorizedProduct;
     }
     

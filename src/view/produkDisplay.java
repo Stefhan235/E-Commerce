@@ -50,6 +50,7 @@ public class produkDisplay extends javax.swing.JDialog {
             produkDisplayPurchasePanel.setVisible(false);
         } else {
             produkDisplayConfigureProduct.setVisible(false);
+            produkDisplayDelete.setVisible(false);
             produkDisplaySellerInfo.setText(product.getPenjual().getNo_telepon());
             produkDisplaySellerName.setText(product.getPenjual().getNamaToko());
             Gambar.renderAkun(produkDisplaySellerImg, product.getPenjual().getImgPath());
@@ -133,6 +134,7 @@ public class produkDisplay extends javax.swing.JDialog {
         produkDisplayBackButton = new javax.swing.JButton();
         produkDisplayConfigureProduct = new javax.swing.JButton();
         produkDisplayprice = new javax.swing.JLabel();
+        produkDisplayDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -431,6 +433,16 @@ public class produkDisplay extends javax.swing.JDialog {
         produkDisplayprice.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         produkDisplayprice.setText("Rp.");
 
+        produkDisplayDelete.setBackground(new java.awt.Color(255, 102, 102));
+        produkDisplayDelete.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        produkDisplayDelete.setForeground(new java.awt.Color(255, 255, 255));
+        produkDisplayDelete.setText("Hapus Barang");
+        produkDisplayDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                produkDisplayDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -442,7 +454,9 @@ public class produkDisplay extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(produkDisplayBackButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(produkDisplayConfigureProduct))
+                        .addComponent(produkDisplayConfigureProduct)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(produkDisplayDelete))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(produkDisplayPurchasePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
@@ -466,7 +480,7 @@ public class produkDisplay extends javax.swing.JDialog {
                                     .addComponent(jLabel8)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(produkDisplayStock))))))
-                .addContainerGap(454, Short.MAX_VALUE))
+                .addContainerGap(466, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -504,8 +518,9 @@ public class produkDisplay extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(produkDisplayBackButton)
-                    .addComponent(produkDisplayConfigureProduct))
-                .addGap(0, 100, Short.MAX_VALUE))
+                    .addComponent(produkDisplayConfigureProduct)
+                    .addComponent(produkDisplayDelete))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         pack();
@@ -598,6 +613,21 @@ public class produkDisplay extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_produkDisplayPackagingActionPerformed
 
+    private void produkDisplayDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_produkDisplayDeleteActionPerformed
+        try {
+            Database db = new Database();
+            String sql = String.format(
+                "DELETE FROM produk WHERE id_barang=%d",
+                product.getIdProduk()
+            );
+            db.query(sql);
+            JOptionPane.showMessageDialog(null, "Barang telah dihapus!", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
+        } catch(SQLException e) {
+            JOptionPane.showMessageDialog(null, "Terjadi kesalahan", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
+        }
+        this.setVisible(false);
+    }//GEN-LAST:event_produkDisplayDeleteActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -664,6 +694,7 @@ public class produkDisplay extends javax.swing.JDialog {
     private javax.swing.JButton produkDisplayBackButton;
     private javax.swing.JLabel produkDisplayCategory;
     private javax.swing.JButton produkDisplayConfigureProduct;
+    private javax.swing.JButton produkDisplayDelete;
     private javax.swing.JLabel produkDisplayDescription;
     private javax.swing.JLabel produkDisplayGrandTotal;
     private javax.swing.JLabel produkDisplayImg;
