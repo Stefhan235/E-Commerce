@@ -149,7 +149,7 @@ public class produkDisplay extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -539,32 +539,38 @@ public class produkDisplay extends javax.swing.JDialog {
         int itemCount = ((int) produkDisplayAmount.getValue());
         int subtotal = itemCount*product.getHargaProduk();
         int tax;
-        if(product instanceof Minuman) tax = itemCount*((Minuman) product).hitungPajak();
-        else if(product instanceof Makanan ) tax = itemCount*((Makanan) product).hitungPajak();
-        else tax = itemCount*((Elektronik) product).hitungPajak();
-        int totalHarga = tax + subtotal;
+        
+        if(itemCount > 0) {
+            if(product instanceof Minuman) tax = itemCount*((Minuman) product).hitungPajak();
+            else if(product instanceof Makanan ) tax = itemCount*((Makanan) product).hitungPajak();
+            else tax = itemCount*((Elektronik) product).hitungPajak();
+            int totalHarga = tax + subtotal;
 
-        try{
-            Database db = new Database();
-            if(user.getSaldo()>=totalHarga){
-                String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
-                db.query(sql);
-                JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Saldo anda tidak cukup!", "Gagal", JOptionPane.INFORMATION_MESSAGE);
-                return;
+            try{
+                Database db = new Database();
+                if(user.getSaldo()>=totalHarga){
+                    String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
+                    db.query(sql);
+                    JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Saldo anda tidak cukup!", "Gagal", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+
+                Seller penjual = product.getPenjual();
+                String emailSeller = penjual.getEmail();
+                String sql2 = String.format("update seller set saldo = %d where email = '%s'",penjual.getSaldo()+totalHarga,emailSeller);
+                db.query(sql2);
+
+                String sql3 = String.format("update produk set stok = %d where nama = '%s' and penjual = '%s'",product.getStok()-itemCount,product.getNamaProduk(),emailSeller);
+                db.query(sql3);
+
+            } catch(SQLException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.INFORMATION_MESSAGE);
             }
-
-            Seller penjual = product.getPenjual();
-            String emailSeller = penjual.getEmail();
-            String sql2 = String.format("update seller set saldo = %d where email = '%s'",penjual.getSaldo()+totalHarga,emailSeller);
-            db.query(sql2);
-
-            String sql3 = String.format("update produk set stok = %d where nama = '%s' and penjual = '%s'",product.getStok()-itemCount,product.getNamaProduk(),emailSeller);
-            db.query(sql3);
-
-        }catch(SQLException e){
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.INFORMATION_MESSAGE);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Anda tidak beli apa-apa", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_produkDisplayPurchaseButtonActionPerformed
 
