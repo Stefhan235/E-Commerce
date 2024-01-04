@@ -309,7 +309,7 @@ public class SellerSignUp extends javax.swing.JFrame {
                     Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                Seller.registrasiSeller(namaToko, nama, email, password, nomorTelepon, email);
+                Seller.registrasiSeller(namaToko, nama, email, password, nomorTelepon, email + "." + ext);
 
                 SellerSignIn sellSignIn = new SellerSignIn();
                 sellSignIn.setVisible(true);
