@@ -22,7 +22,6 @@ public class Gambar {
     }
     
     static public void renderAkun(JLabel target, String imgPath) {
-        System.out.println(imgPath);
         File f = new File(String.format("src//upload//akun//%s", imgPath));
 
         Image img = (new ImageIcon(f.toString())).getImage().getScaledInstance(

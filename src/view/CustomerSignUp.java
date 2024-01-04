@@ -278,7 +278,7 @@ public class CustomerSignUp extends javax.swing.JFrame {
                     Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                Customer.registrasiCustomer(nama, email, nomorTelepon, password, email);
+                Customer.registrasiCustomer(nama, email, nomorTelepon, password, email + "." + ext);
 
                 CustomerSignIn custSignIn = new CustomerSignIn();
                 custSignIn.setVisible(true);
