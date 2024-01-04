@@ -160,7 +160,7 @@ public class produkDisplay extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -429,6 +429,11 @@ public class produkDisplay extends javax.swing.JDialog {
 
         produkDisplayConfigureProduct.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         produkDisplayConfigureProduct.setText("Edit Barang");
+        produkDisplayConfigureProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                produkDisplayConfigureProductActionPerformed(evt);
+            }
+        });
 
         produkDisplayprice.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         produkDisplayprice.setText("Rp.");
@@ -447,7 +452,7 @@ public class produkDisplay extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1631, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1643, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -580,7 +585,6 @@ public class produkDisplay extends javax.swing.JDialog {
                 if(user.getSaldo()>=totalHarga){
                     String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
                     db.query(sql);
-                    JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(null, "Saldo anda tidak cukup!", "Gagal", JOptionPane.INFORMATION_MESSAGE);
                     return;
@@ -627,6 +631,12 @@ public class produkDisplay extends javax.swing.JDialog {
         }
         this.setVisible(false);
     }//GEN-LAST:event_produkDisplayDeleteActionPerformed
+
+    private void produkDisplayConfigureProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_produkDisplayConfigureProductActionPerformed
+        // TODO add your handling code here:
+        produkEdit editProduk = new produkEdit(null, true, product, user);
+        editProduk.setVisible(true);
+    }//GEN-LAST:event_produkDisplayConfigureProductActionPerformed
 
     /**
      * @param args the command line arguments

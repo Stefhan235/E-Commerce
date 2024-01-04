@@ -5,19 +5,56 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import model.Akun;
+import model.Customer;
+import model.Database;
+import model.Makanan;
+import model.Minuman;
+import model.Produk;
 
 /**
  *
  * @author deazs
  */
 public class produkEdit extends javax.swing.JDialog {
-
+    static private Produk product;
+    static private String productCategory; // Not really needed
+    static private Akun user;
+    private static String filename;
     /**
      * Creates new form produkEdit
      */
-    public produkEdit(java.awt.Frame parent, boolean modal) {
+    public produkEdit(java.awt.Frame parent, boolean modal, Produk product, Akun user) {
         super(parent, modal);
         initComponents();
+        
+        this.product = product;
+        this.user = user;
+        
+        if(product instanceof Minuman ) {
+            produkTambahKategori.setSelectedIndex(0);
+        } else if(product instanceof Makanan ) {
+            produkTambahKategori.setSelectedIndex(1);
+        } else {
+            produkTambahKategori.setSelectedIndex(2);
+        }
+        
+        Gambar.renderProduk(tambahProdukImg, product.getImgPath());
+        produkTambahNama.setText(product.getNamaProduk());
+        produkTambahHarga.setText(String.valueOf(product.getHargaProduk()));
+        produkTambahStok.setText(String.valueOf(product.getStok()));
+        produkTambahDeskripsi.setText(product.getDeskripsiProduk());  
     }
 
     /**
@@ -34,7 +71,7 @@ public class produkEdit extends javax.swing.JDialog {
         jPanel3 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         tambahProdukImg = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        pilihGambarBtn = new javax.swing.JButton();
         produkTambahNama = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         produkTambahHarga = new javax.swing.JTextField();
@@ -46,7 +83,7 @@ public class produkEdit extends javax.swing.JDialog {
         jLabel6 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         produkTambahDeskripsi = new javax.swing.JTextArea();
-        jButton2 = new javax.swing.JButton();
+        updateBtn = new javax.swing.JButton();
         produkTambahBackButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -71,7 +108,7 @@ public class produkEdit extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 225, 54));
@@ -100,9 +137,14 @@ public class produkEdit extends javax.swing.JDialog {
         tambahProdukImg.setText("Gambar produkmu akan muncul di sini!");
         tambahProdukImg.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton1.setText("Pilih Gambar");
-        jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 225, 54), 2, true));
+        pilihGambarBtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        pilihGambarBtn.setText("Pilih Gambar");
+        pilihGambarBtn.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 225, 54), 2, true));
+        pilihGambarBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pilihGambarBtnActionPerformed(evt);
+            }
+        });
 
         produkTambahNama.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         produkTambahNama.setText("<nama produk>");
@@ -137,10 +179,15 @@ public class produkEdit extends javax.swing.JDialog {
         produkTambahDeskripsi.setRows(5);
         jScrollPane1.setViewportView(produkTambahDeskripsi);
 
-        jButton2.setBackground(new java.awt.Color(255, 225, 54));
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        jButton2.setText("Update");
-        jButton2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        updateBtn.setBackground(new java.awt.Color(255, 225, 54));
+        updateBtn.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        updateBtn.setText("Update");
+        updateBtn.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateBtnActionPerformed(evt);
+            }
+        });
 
         produkTambahBackButton.setBackground(new Color(0, 0, 0, 0));
         produkTambahBackButton.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
@@ -157,7 +204,7 @@ public class produkEdit extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(tambahProdukImg, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pilihGambarBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -167,7 +214,9 @@ public class produkEdit extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButton2))
+                                .addComponent(produkTambahBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(updateBtn))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel5)
@@ -184,11 +233,6 @@ public class produkEdit extends javax.swing.JDialog {
                                 .addComponent(produkTambahKategori, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING))
                         .addGap(652, 652, 652))))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(758, 758, 758)
-                    .addComponent(produkTambahBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(758, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +245,7 @@ public class produkEdit extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(tambahProdukImg, javax.swing.GroupLayout.PREFERRED_SIZE, 307, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(pilihGambarBtn))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(produkTambahNama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -223,17 +267,68 @@ public class produkEdit extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateBtn)
+                    .addComponent(produkTambahBackButton))
                 .addGap(0, 265, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(485, 485, 485)
-                    .addComponent(produkTambahBackButton)
-                    .addContainerGap(267, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
+        try {
+            // TODO add your handling code here:
+            String nama = produkTambahNama.getText();
+            int harga = Integer.parseInt(produkTambahHarga.getText());
+            int stok = Integer.parseInt(produkTambahStok.getText());
+            Object kategori =  produkTambahKategori.getSelectedItem();
+            String deskripsi = produkTambahDeskripsi.getText();
+            
+            String productName = product.getNamaProduk();
+            String email = product.getPenjual().getEmail();
+            
+            String newpath = "src//upload//produk";
+            File directory = new File(newpath);
+            if (!directory.exists()){
+                directory.mkdirs();
+            }
+            File fileawal;
+            File fileakhir;
+            File fileakhir2;
+            String ext = this.filename.substring(filename.lastIndexOf(".")+1);
+            fileawal = new File(filename);
+            fileakhir = new File(newpath + "//" + email + nama + "." + ext);
+            fileakhir2 = new File(email + nama + "." + ext);
+            
+            try {
+                Files.copy(fileawal.toPath(), fileakhir.toPath());
+            } catch (IOException ex) {
+                Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Database db = new Database();
+            String sql = "UPDATE produk SET nama = '"+nama+"', harga = '"+harga+"', stok = '"+stok+"', kategori = '"+kategori+"', deskripsi = '"+deskripsi+"', image_path = '"+fileakhir2+"' "
+                    + "WHERE nama = '"+productName+"' and penjual = '"+email+"'";
+            db.query(sql);
+        } catch (SQLException ex) {
+            Logger.getLogger(produkEdit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setVisible(false);
+        
+    }//GEN-LAST:event_updateBtnActionPerformed
+
+    private void pilihGambarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pilihGambarBtnActionPerformed
+        // TODO add your handling code here: 
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(null);
+        File f = chooser.getSelectedFile();
+        ImageIcon icon = new ImageIcon(f.toString());
+        Image img = icon.getImage().getScaledInstance(tambahProdukImg.getWidth(), tambahProdukImg.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon ic = new ImageIcon(img);
+        tambahProdukImg.setIcon(ic);
+        this.filename = f.getAbsolutePath();
+    }//GEN-LAST:event_pilihGambarBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -265,7 +360,7 @@ public class produkEdit extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                produkEdit dialog = new produkEdit(new javax.swing.JFrame(), true);
+                produkEdit dialog = new produkEdit(new javax.swing.JFrame(), true, null, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -278,8 +373,6 @@ public class produkEdit extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -290,6 +383,7 @@ public class produkEdit extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JButton pilihGambarBtn;
     private javax.swing.JButton produkTambahBackButton;
     private javax.swing.JTextArea produkTambahDeskripsi;
     private javax.swing.JTextField produkTambahHarga;
@@ -297,5 +391,6 @@ public class produkEdit extends javax.swing.JDialog {
     private javax.swing.JTextField produkTambahNama;
     private javax.swing.JTextField produkTambahStok;
     private javax.swing.JLabel tambahProdukImg;
+    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 }
