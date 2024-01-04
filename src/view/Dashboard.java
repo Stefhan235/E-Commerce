@@ -962,26 +962,6 @@ public class Dashboard extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
         }
     }
-    private void updateDisplaySaldo(int deltaSaldo, char operation) {
-        switch(operation) {
-            case '+':
-                saldoSekarang += deltaSaldo;
-                break;
-            case '-':
-                if(saldoSekarang >= deltaSaldo ) {
-                    saldoSekarang -= deltaSaldo;
-                } else {
-                    JOptionPane.showMessageDialog(
-                            null, "Pinjol dulu!", 
-                            "Error!", HEIGHT
-                    );
-                }
-        }
-        
-        dashboardSaldoAnda.setText(String.format(
-        "Rp. %d", saldoSekarang
-        ));
-    }
     
     private void dashboardSaldoActionValueFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_dashboardSaldoActionValueFocusLost
        
@@ -1050,14 +1030,22 @@ public class Dashboard extends javax.swing.JFrame {
                 
                 // Update interface and database
                 if(isClient){
-                    updateDisplaySaldo(nominal, '+');
                     user.setSaldo(user.getSaldo() + nominal);
-                    
                 }
                 else {
-                    updateDisplaySaldo(nominal, '-');
-                    user.setSaldo(user.getSaldo() - nominal);
+                    if(saldoSekarang >= nominal ) {
+                        user.setSaldo(user.getSaldo() - nominal);
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                null, "Pinjol dulu!", 
+                                "Error!", HEIGHT
+                        );
+                    }
                 };
+                
+                dashboardSaldoAnda.setText(String.format(
+                    "Rp. %d", user.getSaldo()
+                ));
                 
                 updateDBSaldo(this.user.getEmail(), nominal);
             } catch(NumberFormatException e) {
@@ -1065,7 +1053,6 @@ public class Dashboard extends javax.swing.JFrame {
             }
         }
         
-        this.requestFocusInWindow();
         dashboardSaldoActionValue.setText("Masukkan nominal (contoh: 50000)");
     }//GEN-LAST:event_dashboardSaldoActionButtonActionPerformed
 
