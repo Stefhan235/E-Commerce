@@ -57,12 +57,21 @@ public class produkDisplay extends javax.swing.JDialog {
         
         // Product related update
         if(product instanceof Minuman ) {
+            produkDisplayPackaging.setModel(new javax.swing.DefaultComboBoxModel<>(
+                ((Minuman) product).getKemasanTersedia()
+            ));
             produkDisplayCategory.setText("Minuman");
             produkDisplayTaxPercentage.setText("(1%)");
         } else if(product instanceof Makanan ) {
+            produkDisplayPackaging.setModel(new javax.swing.DefaultComboBoxModel<>(
+                ((Makanan) product).getKemasanTersedia()
+            ));
             produkDisplayCategory.setText("Makanan");
             produkDisplayTaxPercentage.setText("(2%)");
         } else {
+            produkDisplayPackaging.setModel(new javax.swing.DefaultComboBoxModel<>(
+                ((Elektronik) product).getKemasanTersedia()
+            ));
             produkDisplayCategory.setText("Elektronik");
             produkDisplayTaxPercentage.setText("(10%)");
         }
@@ -112,7 +121,7 @@ public class produkDisplay extends javax.swing.JDialog {
         produkDisplayAmount = new javax.swing.JSpinner();
         jLabel5 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        displayProdukPackaging = new javax.swing.JComboBox<>();
+        produkDisplayPackaging = new javax.swing.JComboBox<>();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel9 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
@@ -295,8 +304,13 @@ public class produkDisplay extends javax.swing.JDialog {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel7.setText("Beli Barang");
 
-        displayProdukPackaging.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        displayProdukPackaging.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        produkDisplayPackaging.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        produkDisplayPackaging.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        produkDisplayPackaging.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                produkDisplayPackagingActionPerformed(evt);
+            }
+        });
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         jLabel9.setText("Detail Harga");
@@ -334,7 +348,7 @@ public class produkDisplay extends javax.swing.JDialog {
                                     .addComponent(jLabel5))
                                 .addGap(18, 18, 18)
                                 .addGroup(produkDisplayPurchasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(displayProdukPackaging, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(produkDisplayPackaging, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(produkDisplayAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(15, 15, 15)
                                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -384,7 +398,7 @@ public class produkDisplay extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(produkDisplayPurchasePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel5)
-                                    .addComponent(displayProdukPackaging, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(produkDisplayPackaging, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(produkDisplayPurchasePanelLayout.createSequentialGroup()
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -564,7 +578,13 @@ public class produkDisplay extends javax.swing.JDialog {
 
                 String sql3 = String.format("update produk set stok = %d where nama = '%s' and penjual = '%s'",product.getStok()-itemCount,product.getNamaProduk(),emailSeller);
                 db.query(sql3);
-
+                
+                Transaksi receipt = new Transaksi(new javax.swing.JFrame(), true, 
+                        product, product.getPenjual(), 
+                        (String) produkDisplayPackaging.getSelectedItem(), 
+                        new int[]{itemCount, subtotal, tax}
+                );
+                receipt.setVisible(true);
             } catch(SQLException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -573,6 +593,10 @@ public class produkDisplay extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Anda tidak beli apa-apa", "Perhatian", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_produkDisplayPurchaseButtonActionPerformed
+
+    private void produkDisplayPackagingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_produkDisplayPackagingActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_produkDisplayPackagingActionPerformed
 
     /**
      * @param args the command line arguments
@@ -618,7 +642,6 @@ public class produkDisplay extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel dashboardTitle;
-    private javax.swing.JComboBox<String> displayProdukPackaging;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -645,6 +668,7 @@ public class produkDisplay extends javax.swing.JDialog {
     private javax.swing.JLabel produkDisplayGrandTotal;
     private javax.swing.JLabel produkDisplayImg;
     private javax.swing.JLabel produkDisplayName;
+    private javax.swing.JComboBox<String> produkDisplayPackaging;
     private javax.swing.JLabel produkDisplayPrice;
     private javax.swing.JButton produkDisplayPurchaseButton;
     private javax.swing.JPanel produkDisplayPurchasePanel;

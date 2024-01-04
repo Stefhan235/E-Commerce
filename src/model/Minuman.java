@@ -16,4 +16,8 @@ public class Minuman extends Produk implements Pajak {
     public int hitungPajak() {
         return (int) (this.getHargaProduk()*0.01);
     }
+    
+    public String[] getKemasanTersedia() {
+        return new String[]{"Botol", "Kaleng", "Kardus"};
+    }
 }

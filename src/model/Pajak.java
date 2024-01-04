@@ -10,4 +10,5 @@ package model;
  */
 public interface Pajak {
     abstract public int hitungPajak();
+    abstract public String[] getKemasanTersedia();
 }

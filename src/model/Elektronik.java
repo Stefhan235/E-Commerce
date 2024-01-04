@@ -16,4 +16,8 @@ public class Elektronik extends Produk implements Pajak {
     public int hitungPajak() {
         return (int) (this.getHargaProduk() * 0.1);
     }
+    
+    public String[] getKemasanTersedia() {
+        return new String[]{"Bubble Wrap", "Kayu"};
+    }
 }
