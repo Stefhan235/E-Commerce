@@ -46,12 +46,11 @@ public class SellerSignIn extends javax.swing.JFrame {
         backBtn = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1382, 722));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1382, 722));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/assets/loginPage.jpg"))); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/assets/imgLoginPage.jpg"))); // NOI18N
 
         jPanel2.setBackground(new java.awt.Color(255, 225, 54));
 
