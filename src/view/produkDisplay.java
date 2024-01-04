@@ -5,8 +5,11 @@
 package view;
 
 import java.awt.Color;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner.DefaultEditor;
 import model.Akun;
+import model.Database;
 import model.Elektronik;
 import model.Makanan;
 import model.Minuman;
@@ -42,7 +45,7 @@ public class produkDisplay extends javax.swing.JDialog {
     private void updateGUI() {
         System.out.println(user.getImgPath());
         // Seller related update
-        if(!(user instanceof Seller)) {
+        if((user instanceof Seller)) {
             produkDisplaySellerDetails.setVisible(false);
             produkDisplayPurchasePanel.setVisible(false);
         } else {
@@ -262,6 +265,11 @@ public class produkDisplay extends javax.swing.JDialog {
         produkDisplayPurchaseButton.setBackground(new java.awt.Color(255, 225, 54));
         produkDisplayPurchaseButton.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         produkDisplayPurchaseButton.setText("Beli");
+        produkDisplayPurchaseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                produkDisplayPurchaseButtonActionPerformed(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Grand Total");
@@ -526,6 +534,34 @@ public class produkDisplay extends javax.swing.JDialog {
         }
         updateReceipt();
     }//GEN-LAST:event_produkDisplayAmountStateChanged
+
+    private void produkDisplayPurchaseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_produkDisplayPurchaseButtonActionPerformed
+        int itemCount = ((int) produkDisplayAmount.getValue());
+        int subtotal = itemCount*product.getHargaProduk();
+        int tax;
+        if(product instanceof Minuman) tax = itemCount*((Minuman) product).hitungPajak();
+        else if(product instanceof Makanan ) tax = itemCount*((Makanan) product).hitungPajak();
+        else tax = itemCount*((Elektronik) product).hitungPajak();
+        int totalHarga = tax + subtotal;
+
+        try{
+            Database db = new Database();
+            String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
+            db.query(sql);
+            JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+
+            Seller penjual = product.getPenjual();
+            String emailSeller = penjual.getEmail();
+            String sql2 = String.format("update seller set saldo = %d where email = '%s'",penjual.getSaldo()+totalHarga,emailSeller);
+            db.query(sql2);
+
+            String sql3 = String.format("update produk set stok = %d where nama = '%s' and penjual = '%s'",product.getStok()-itemCount,product.getNamaProduk(),emailSeller);
+            db.query(sql3);
+
+        }catch(SQLException e){
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Kesalahan", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_produkDisplayPurchaseButtonActionPerformed
 
     /**
      * @param args the command line arguments
