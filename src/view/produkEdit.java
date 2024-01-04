@@ -293,27 +293,31 @@ public class produkEdit extends javax.swing.JDialog {
             String productName = product.getNamaProduk();
             String email = product.getPenjual().getEmail();
             
-            String newpath = "src//upload//produk";
-            File directory = new File(newpath);
-            if (!directory.exists()){
-                directory.mkdirs();
-            }
-            File fileawal;
-            File fileakhir;
             File fileakhir2;
-            String ext = this.filename.substring(filename.lastIndexOf(".")+1);
-            fileawal = new File(filename);
-            fileakhir = new File(newpath + "//" + email + nama + "." + ext);
-            fileakhir2 = new File(email + nama + "." + ext);
-            
-            if (fileakhir.exists()){
-                fileakhir.delete();
-            }
-            
-            try {
-                Files.copy(fileawal.toPath(), fileakhir.toPath());
-            } catch (IOException ex) {
-                Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+            if(filename != null) {
+                String newpath = "src//upload//produk";
+                File directory = new File(newpath);
+                if (!directory.exists()){
+                    directory.mkdirs();
+                }
+                File fileawal;
+                File fileakhir;
+                String ext = this.filename.substring(filename.lastIndexOf(".")+1);
+                fileawal = new File(filename);
+                fileakhir = new File(newpath + "//" + email + nama + "." + ext);
+                fileakhir2 = new File(email + nama + "." + ext);
+
+                if (fileakhir.exists()){
+                    fileakhir.delete();
+                }
+                
+                try {
+                    Files.copy(fileawal.toPath(), fileakhir.toPath());
+                } catch (IOException ex) {
+                    Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                fileakhir2 = new File(product.getImgPath());
             }
             
             Database db = new Database();
