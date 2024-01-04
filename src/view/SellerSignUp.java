@@ -289,9 +289,9 @@ public class SellerSignUp extends javax.swing.JFrame {
         
         
         if (namaToko.isEmpty() || nama.isEmpty() || email.isEmpty() || nomorTelepon.isEmpty() || password.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Mohon Isi Semua Kolom.", "Error", JOptionPane.ERROR_MESSAGE);
         }else if (filename == null ) {
-            JOptionPane.showMessageDialog(this, "Mohon unggah gambar.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Mohon Unggah Gambar.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
             try {
                 String newpath = "src//upload";

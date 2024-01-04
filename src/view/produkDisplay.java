@@ -149,7 +149,7 @@ public class produkDisplay extends javax.swing.JDialog {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
@@ -421,7 +421,7 @@ public class produkDisplay extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1619, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1631, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -546,9 +546,14 @@ public class produkDisplay extends javax.swing.JDialog {
 
         try{
             Database db = new Database();
-            String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
-            db.query(sql);
-            JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            if(user.getSaldo()>=totalHarga){
+                String sql = String.format("update customer set saldo = %d where email = '%s'",user.getSaldo()-totalHarga,user.getEmail());
+                db.query(sql);
+                JOptionPane.showMessageDialog(null, "Produk berhasil dibeli!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Saldo anda tidak cukup!", "Gagal", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
 
             Seller penjual = product.getPenjual();
             String emailSeller = penjual.getEmail();

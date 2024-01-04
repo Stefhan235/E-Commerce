@@ -162,17 +162,17 @@ public class CustomerSignIn extends javax.swing.JFrame {
         String password = inputPassword.getText();
         
         if (email.isEmpty() || password.isEmpty()){
-            JOptionPane.showMessageDialog(null, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Mohon Isi Semua Kolom.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
             try {
                 Customer user = Customer.loginCustomer(email, password);
                 if (user != null){
-                    JOptionPane.showMessageDialog(null, "Operasi berhasil!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Login Berhasil", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                     Dashboard dashboard = new Dashboard(user, true);
                     dashboard.setVisible(true);
                     this.setVisible(false);
                 }else{
-                    JOptionPane.showMessageDialog(null, "Cek Kembali", "Gagal", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Cek Kembali Data Anda", "Gagal", JOptionPane.INFORMATION_MESSAGE);
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(CustomerSignIn.class.getName()).log(Level.SEVERE, null, ex);

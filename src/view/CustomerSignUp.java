@@ -258,9 +258,9 @@ public class CustomerSignUp extends javax.swing.JFrame {
         String password = inputPassword.getText();
 
         if (nama.isEmpty() || email.isEmpty() || nomorTelepon.isEmpty() || password.isEmpty()){
-            JOptionPane.showMessageDialog(this, "Mohon isi semua kolom.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Mohon Isi Semua Kolom.", "Error", JOptionPane.ERROR_MESSAGE);
         }else if (filename == null ) {
-            JOptionPane.showMessageDialog(this, "Mohon unggah gambar.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Mohon Unggah Gambar.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
             try {
                 String newpath = "src//upload";
