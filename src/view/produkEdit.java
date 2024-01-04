@@ -193,6 +193,11 @@ public class produkEdit extends javax.swing.JDialog {
         produkTambahBackButton.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         produkTambahBackButton.setText("Kembali");
         produkTambahBackButton.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(255, 225, 54), 2, true));
+        produkTambahBackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                produkTambahBackButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -301,6 +306,10 @@ public class produkEdit extends javax.swing.JDialog {
             fileakhir = new File(newpath + "//" + email + nama + "." + ext);
             fileakhir2 = new File(email + nama + "." + ext);
             
+            if (fileakhir.exists()){
+                fileakhir.delete();
+            }
+            
             try {
                 Files.copy(fileawal.toPath(), fileakhir.toPath());
             } catch (IOException ex) {
@@ -329,6 +338,11 @@ public class produkEdit extends javax.swing.JDialog {
         tambahProdukImg.setIcon(ic);
         this.filename = f.getAbsolutePath();
     }//GEN-LAST:event_pilihGambarBtnActionPerformed
+
+    private void produkTambahBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_produkTambahBackButtonActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+    }//GEN-LAST:event_produkTambahBackButtonActionPerformed
 
     /**
      * @param args the command line arguments
