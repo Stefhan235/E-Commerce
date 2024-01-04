@@ -294,7 +294,7 @@ public class SellerSignUp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Mohon Unggah Gambar.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
             try {
-                String newpath = "src//upload";
+                String newpath = "src//upload//akun";
                 File directory = new File(newpath);
                 if (!directory.exists()){
                     directory.mkdirs();
@@ -310,7 +310,7 @@ public class SellerSignUp extends javax.swing.JFrame {
                     Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                Seller.registrasiSeller(namaToko, nama, email, password, nomorTelepon, fileakhir.toString());
+                Seller.registrasiSeller(namaToko, nama, email, password, nomorTelepon, email);
 
                 SellerSignIn sellSignIn = new SellerSignIn();
                 sellSignIn.setVisible(true);

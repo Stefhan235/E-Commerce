@@ -51,8 +51,8 @@ public class produkDisplay extends javax.swing.JDialog {
         } else {
             produkDisplayConfigureProduct.setVisible(false);
             produkDisplaySellerInfo.setText(product.getPenjual().getNo_telepon());
-            produkDisplaySellerName.setText(product.getPenjual().getNama());
-            Gambar.render(produkDisplaySellerImg, product.getPenjual().getImgPath());
+            produkDisplaySellerName.setText(product.getPenjual().getNamaToko());
+            Gambar.renderAkun(produkDisplaySellerImg, product.getPenjual().getImgPath());
         }
         
         // Product related update
@@ -67,7 +67,7 @@ public class produkDisplay extends javax.swing.JDialog {
             produkDisplayTaxPercentage.setText("(10%)");
         }
         
-        Gambar.render(produkDisplayImg, product.getImgPath());
+        Gambar.renderProduk(produkDisplayImg, product.getImgPath());
         produkDisplayName.setText(product.getNamaProduk());
         produkDisplayPrice.setText(String.valueOf(product.getHargaProduk()));
         produkDisplayStock.setText(String.valueOf(product.getStok()));

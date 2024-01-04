@@ -263,7 +263,7 @@ public class CustomerSignUp extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Mohon Unggah Gambar.", "Error", JOptionPane.ERROR_MESSAGE);
         }else {
             try {
-                String newpath = "src//upload";
+                String newpath = "src//upload//akun";
                 File directory = new File(newpath);
                 if (!directory.exists()){
                     directory.mkdirs();
@@ -279,7 +279,7 @@ public class CustomerSignUp extends javax.swing.JFrame {
                     Logger.getLogger(CustomerSignUp.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
-                Customer.registrasiCustomer(nama, email, nomorTelepon, password, fileakhir.toString());
+                Customer.registrasiCustomer(nama, email, nomorTelepon, password, email);
 
                 CustomerSignIn custSignIn = new CustomerSignIn();
                 custSignIn.setVisible(true);

@@ -98,36 +98,36 @@ public class Dashboard extends javax.swing.JFrame {
                         productName2.setText(listBarang[i].getNamaProduk());
                         productPrice2.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock2.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjual().getNama());
-                        Gambar.render(productImg2, listBarang[i].getImgPath());
+                        productVendor2.setText(listBarang[i].getPenjual().getNamaToko());
+                        Gambar.renderProduk(productImg2, listBarang[i].getImgPath());
                         break;
                     case 2:
                         productName3.setText(listBarang[i].getNamaProduk());
                         productPrice3.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock3.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjual().getNama());
-                        Gambar.render(productImg3, listBarang[i].getImgPath());
+                        productVendor3.setText(listBarang[i].getPenjual().getNamaToko());
+                        Gambar.renderProduk(productImg3, listBarang[i].getImgPath());
                         break;
                     case 3:
                         productName4.setText(listBarang[i].getNamaProduk());
                         productPrice4.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock4.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjual().getNama());
-                        Gambar.render(productImg4, listBarang[i].getImgPath());
+                        productVendor4.setText(listBarang[i].getPenjual().getNamaToko());
+                        Gambar.renderProduk(productImg4, listBarang[i].getImgPath());
                         break;
                     case 4:
                         productName5.setText(listBarang[i].getNamaProduk());
                         productPrice5.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock5.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjual().getNama());
-                        Gambar.render(productImg5, listBarang[i].getImgPath());
+                        productVendor5.setText(listBarang[i].getPenjual().getNamaToko());
+                        Gambar.renderProduk(productImg5, listBarang[i].getImgPath());
                         break;
                     default:
                         productName1.setText(listBarang[i].getNamaProduk());
                         productPrice1.setText(String.format("Rp. %d", listBarang[i].getHargaProduk()));
                         productStock1.setText(String.format("%d", listBarang[i].getStok()));
-                        productVendor4.setText(listBarang[i].getPenjual().getNama());
-                        Gambar.render(productImg1, listBarang[i].getImgPath());
+                        productVendor1.setText(listBarang[i].getPenjual().getNamaToko());
+                        Gambar.renderProduk(productImg1, listBarang[i].getImgPath());
                 }
             }
         }
@@ -939,7 +939,7 @@ public class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_productCard1MouseClicked
 
     private void dashboardAddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardAddItemActionPerformed
-        produkTambah page = new produkTambah(this, true, user.getEmail());
+        produkTambah page = new produkTambah(this, true, (Seller)user);
         page.setVisible(true);
     }//GEN-LAST:event_dashboardAddItemActionPerformed
 
@@ -1016,6 +1016,12 @@ public class Dashboard extends javax.swing.JFrame {
         updateItemDisplay();
     }//GEN-LAST:event_dashboardPrevPageActionPerformed
 
+    private void updateSaldoDisplay(int saldo) {
+        dashboardSaldoAnda.setText(String.format(
+            "Rp. %d", saldo
+        ));
+    }
+    
     private void dashboardSaldoActionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dashboardSaldoActionButtonActionPerformed
         String tempNominal = dashboardSaldoActionValue.getText();
         int nominal;
@@ -1043,10 +1049,7 @@ public class Dashboard extends javax.swing.JFrame {
                     }
                 };
                 
-                dashboardSaldoAnda.setText(String.format(
-                    "Rp. %d", user.getSaldo()
-                ));
-                
+                updateSaldoDisplay(user.getSaldo());
                 updateDBSaldo(this.user.getEmail(), nominal);
             } catch(NumberFormatException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error!", HEIGHT);
@@ -1069,6 +1072,14 @@ public class Dashboard extends javax.swing.JFrame {
         fetchItems();
         updateItemDisplay();
         updatePaginatorMsg();
+        
+        try {
+            user.setSaldo(Akun.fetchSaldo((Akun)user, user.getEmail()));
+            updateSaldoDisplay(user.getSaldo());
+        } catch(SQLException e) {
+        
+        }
+        System.out.println("BIJIR");
     }//GEN-LAST:event_dashboardRefreshActionPerformed
 
     private void dashboardRefreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dashboardRefreshMouseClicked
