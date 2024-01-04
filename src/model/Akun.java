@@ -4,6 +4,9 @@
  */
 package model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  *
  * @author wwwvf
@@ -64,4 +67,19 @@ public class Akun {
         this.imgPath = imgPath;
     }
 
+    static public int fetchSaldo(Akun targetUser, String email) throws SQLException {
+        Database db = new Database();
+        String sql;
+        if(targetUser instanceof Seller) {
+            System.out.println("seller");
+            sql = String.format("SELECT saldo FROM seller WHERE email = '%s'", email);
+        } else {
+            System.out.println("buyer");
+            sql = String.format("SELECT saldo FROM customer WHERE email = '%s'", email);
+        }
+        
+        ResultSet rs = db.getData(sql);
+        rs.next();
+        return rs.getInt("saldo");
+    }
 }
