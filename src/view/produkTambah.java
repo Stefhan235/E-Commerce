@@ -18,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import model.Database;
 import model.Produk;
+import model.Seller;
 
 /**
  *
@@ -25,13 +26,13 @@ import model.Produk;
  */
 public class produkTambah extends javax.swing.JDialog {
     private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
-    private static String boundSeller;
+    private static Seller boundSeller;
     private static String tempImgPath;
     
     /**
      * Creates new form test
      */
-    public produkTambah(java.awt.Frame parent, boolean modal, String boundSeller) {
+    public produkTambah(java.awt.Frame parent, boolean modal, Seller boundSeller) {
         super(parent, modal);
         initComponents();
         this.boundSeller = boundSeller;
@@ -351,7 +352,7 @@ public class produkTambah extends javax.swing.JDialog {
         System.out.println(isValid);
         
         // Handle file
-        String newpath = "src//upload";
+        String newpath = "src//upload//produk";
         File directory = new File(newpath);
         if (!directory.exists()){
                     directory.mkdirs();
@@ -362,7 +363,7 @@ public class produkTambah extends javax.swing.JDialog {
         fileawal = new File(tempImgPath);
         fileakhir = new File(
             newpath + "//" + String.format("%s%s.%s", 
-                boundSeller, produkNama.replace(" ", ""), ext
+                boundSeller.getEmail(), produkNama.replace(" ", ""), ext
             )
         );
         
@@ -384,8 +385,11 @@ public class produkTambah extends javax.swing.JDialog {
                     "INSERT INTO produk(nama, harga, stok, kategori, deskripsi, image_path, penjual) VALUES('%s', %d, %d, '%s', '%s', '%s', '%s')",
                     produkNama, produkHarga, produkStok,
                     produkTambahKategori.getSelectedItem().toString(),
-                    produkDeskripsi, String.format("%s%s.%s", boundSeller, produkNama, ext),
-                    boundSeller
+                    produkDeskripsi, 
+                    String.format("%s%s.%s", 
+                        boundSeller.getEmail(), produkNama.replace(" ", ""), ext
+                    ),
+                    boundSeller.getEmail()
                 );
                 db.query(sql);
                 JOptionPane.showMessageDialog(null, "Produk berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
@@ -428,7 +432,7 @@ public class produkTambah extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 produkTambah dialog = new produkTambah(new javax.swing.JFrame(), true, 
-                    "ashdashdlashdlashas"
+                    null
                 );
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
